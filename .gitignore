@@ -1,0 +1,14 @@
+# Claude Code files
+.claude/
+CLAUDE.md
+
+# PDF files
+*.pdf
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
