@@ -48,6 +48,11 @@ cypress/
 │   ├── modifyResponse.cy.js        ← Q4 – modify title
 │   ├── myGovMenuTabs.cy.js         ← Q5 – my.gov tabs
 │   └── search.cy.js                ← Q2 – 5 search tests
+├── fixtures/                       ← test data (JSON)
+│   ├── search-queries.json         ← Q2 – Hebrew search terms
+│   ├── api-endpoints.json          ← Q3 – endpoints + expected status
+│   ├── prime-ministers-office.json ← Q4 – department titles + API path
+│   └── my-gov-tabs.json            ← Q5 – tab labels + URL segments
 ├── pages/                          ← Page Object Model (OOP)
 │   ├── SearchPage.js               ← Q2 search component
 │   ├── GovHomePage.js              ← Q3 & Q4 intercept tests
@@ -58,8 +63,8 @@ cypress/
     └── govMock.js                  ← local mock (Cloudflare bypass)
 ```
 
-All four spec files use the Page Object pattern. `GovHomePage` and `MyGovPage`
-were added in a refactor after the initial implementation.
+All four spec files use the Page Object pattern and load test data via `cy.fixture()`.
+Updating a value (e.g. a tab name or endpoint path) requires editing only the relevant JSON file.
 
 **Note on `modifyResponse.cy.js`:** `page.visit()` must be called before
 registering the `@primeMinistersOffice` intercept. Cypress matches intercepts

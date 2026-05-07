@@ -193,7 +193,11 @@
 │   ├── <span class="file">modifyResponse.cy.js</span>      <span class="note-inline">← שאלה 4 – שינוי title</span><br>
 │   ├── <span class="file">myGovMenuTabs.cy.js</span>       <span class="note-inline">← שאלה 5 – my.gov טאבים</span><br>
 │   └── <span class="file">search.cy.js</span>              <span class="note-inline">← שאלה 2 – 5 טסטים לחיפוש</span><br>
-├── <span class="folder">fixtures/</span>                         <span class="note-inline">← נתוני fixture ברירת מחדל של Cypress</span><br>
+├── <span class="folder">fixtures/</span>                         <span class="note-inline">← נתוני טסט (JSON) מופרדים מהלוגיקה</span><br>
+│   ├── <span class="file">search-queries.json</span>       <span class="note-inline">← שאלה 2 – מחרוזות חיפוש בעברית</span><br>
+│   ├── <span class="file">api-endpoints.json</span>        <span class="note-inline">← שאלה 3 – endpoints + status צפוי</span><br>
+│   ├── <span class="file">prime-ministers-office.json</span><span class="note-inline">← שאלה 4 – כותרות + נתיב API</span><br>
+│   └── <span class="file">my-gov-tabs.json</span>          <span class="note-inline">← שאלה 5 – label + urlSegment לכל טאב</span><br>
 ├── <span class="folder">pages/</span><br>
 │   ├── <span class="file">SearchPage.js</span>             <span class="note-inline">← Page Object לשאלה 2 (חיפוש)</span><br>
 │   ├── <span class="file">GovHomePage.js</span>            <span class="note-inline">← Page Object לשאלות 3 ו-4 (intercept)</span><br>
@@ -209,6 +213,57 @@
 <span class="file">part2-explanation.html</span>            <span class="note-inline">← קובץ הסבר זה</span><br>
 <span class="file">README.md</span>
       </div>
+    </div>
+  </div>
+
+  <!-- ── Fixtures ────────────────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-header">
+      <div class="num">📦</div>
+      <h2>Fixtures – הפרדת נתוני טסט מלוגיקת הטסט</h2>
+    </div>
+    <div class="card-body">
+      <p>
+        כל נתוני הטסט (מחרוזות עברית, endpoint paths, response bodies) הועברו לקבצי JSON
+        בתיקיית <code>cypress/fixtures/</code>. הטסטים קוראים אותם עם <code>cy.fixture()</code>
+        במקום לכתוב ערכים hardcoded.
+      </p>
+
+      <p><strong>למה?</strong></p>
+      <ul>
+        <li>שינוי נתון (למשל שם טאב) דורש עדכון בקובץ JSON אחד בלבד — לא חיפוש בכל ה-specs</li>
+        <li>נתוני הטסט גלויים ומרוכזים, קל לקרוא ולהבין מה הטסט בודק</li>
+        <li>בסיס לdata-driven testing עתידי (הרצת אותו טסט על מספר ערכים)</li>
+      </ul>
+
+      <p><strong>דפוס השימוש — <code>cy.fixture().then()</code>:</strong></p>
+      <pre><code><span class="comment">// לפני – hardcoded</span>
+searchPage.typeQuery(<span class="string">'דרכון'</span>)
+
+<span class="comment">// אחרי – נתון מגיע מ-fixture</span>
+cy.fixture(<span class="string">'search-queries'</span>).then((q) => {
+  searchPage.typeQuery(q.passportQuery)
+})</code></pre>
+
+      <p><strong>דפוס השימוש — <code>.as()</code> ו-<code>this</code> (ב-myGovMenuTabs):</strong></p>
+      <pre><code><span class="comment">// טעינה פעם אחת ב-beforeEach</span>
+beforeEach(() => {
+  cy.fixture(<span class="string">'my-gov-tabs'</span>).as(<span class="string">'tabs'</span>)
+})
+
+<span class="comment">// שימוש בטסט — חובה function() ולא arrow function כדי ש-this יעבוד</span>
+it(<span class="string">'should navigate'</span>, <span class="keyword">function</span>() {
+  <span class="keyword">const</span> { urlSegment } = <span class="keyword">this</span>.tabs.find((t) => t.label === <span class="string">'תשלומים'</span>)
+  page.verifyUrlIncludes(urlSegment)
+})</code></pre>
+
+      <table>
+        <tr><th>קובץ Fixture</th><th>מכיל</th><th>משמש ב</th></tr>
+        <tr><td><code>search-queries.json</code></td><td>healthQuery, passportQuery, idQuery</td><td>search.cy.js</td></tr>
+        <tr><td><code>api-endpoints.json</code></td><td>endpoints[], expectedStatus</td><td>interceptStatusCode.cy.js</td></tr>
+        <tr><td><code>prime-ministers-office.json</code></td><td>originalTitle, modifiedTitle, apiPath</td><td>modifyResponse.cy.js</td></tr>
+        <tr><td><code>my-gov-tabs.json</code></td><td>label + urlSegment לכל טאב</td><td>myGovMenuTabs.cy.js</td></tr>
+      </table>
     </div>
   </div>
 
@@ -303,14 +358,19 @@
 module.exports = SearchPage</code></pre>
 
       <div class="file-badge">cypress/e2e/search.cy.js</div>
-      <p>5 טסטים שמשתמשים ב-SearchPage:</p>
+      <p>5 טסטים שמשתמשים ב-SearchPage. TC03–TC05 טוענים נתונים מ-fixture:</p>
+      <pre><code>cy.fixture(<span class="string">'search-queries'</span>).then((q) => {
+  searchPage.openSearch()
+  searchPage.typeQuery(q.healthQuery)    <span class="comment">// 'בריאות'</span>
+  searchPage.verifySuggestionsVisible()
+})</code></pre>
       <table>
-        <tr><th>טסט</th><th>מה הוא בודק</th></tr>
-        <tr><td>TC01</td><td>כפתור החיפוש מוצג ב-Header</td></tr>
-        <tr><td>TC02</td><td>לחיצה על הכפתור מציגה שדה קלט</td></tr>
-        <tr><td>TC03</td><td>הקלדה מציגה הצעות autocomplete</td></tr>
-        <tr><td>TC04</td><td>שליחת חיפוש מנווטת לדף תוצאות (URL כולל "search")</td></tr>
-        <tr><td>TC05</td><td>ניקוי השדה מאפס את הערך ל-""</td></tr>
+        <tr><th>טסט</th><th>מה הוא בודק</th><th>Fixture</th></tr>
+        <tr><td>TC01</td><td>כפתור החיפוש מוצג ב-Header</td><td>—</td></tr>
+        <tr><td>TC02</td><td>לחיצה על הכפתור מציגה שדה קלט</td><td>—</td></tr>
+        <tr><td>TC03</td><td>הקלדה מציגה הצעות autocomplete</td><td>healthQuery</td></tr>
+        <tr><td>TC04</td><td>שליחת חיפוש מנווטת לדף תוצאות</td><td>passportQuery</td></tr>
+        <tr><td>TC05</td><td>ניקוי השדה מאפס את הערך ל-""</td><td>idQuery</td></tr>
       </table>
 
       <div class="note">
@@ -369,18 +429,23 @@ module.exports = SearchPage</code></pre>
 
 <span class="keyword">const</span> page = <span class="keyword">new</span> <span class="highlight">GovHomePage</span>()
 
-page.visit().triggerApiFetch(<span class="string">'/cities'</span>, <span class="string">'/categories'</span>, <span class="string">'/accessibilitytype'</span>)
+cy.fixture(<span class="string">'api-endpoints'</span>).then((data) => {
+  <span class="keyword">const</span> paths = data.endpoints.map((e) => e.path)
+  page.visit().triggerApiFetch(...paths)
 
-cy.wait(<span class="string">'@cities'</span>).its(<span class="string">'response.statusCode'</span>).should(<span class="string">'eq'</span>, <span class="highlight">200</span>)
-cy.wait(<span class="string">'@categories'</span>).its(<span class="string">'response.statusCode'</span>).should(<span class="string">'eq'</span>, <span class="highlight">200</span>)
-cy.wait(<span class="string">'@accessibilitytype'</span>).its(<span class="string">'response.statusCode'</span>).should(<span class="string">'eq'</span>, <span class="highlight">200</span>)</code></pre>
+  data.endpoints.forEach((e) => {
+    cy.wait(<span class="string">`@${e.alias}`</span>)
+      .its(<span class="string">'response.statusCode'</span>)
+      .should(<span class="string">'eq'</span>, data.expectedStatus)
+  })
+})</code></pre>
 
       <p><strong>הסבר השלבים:</strong></p>
       <ul>
-        <li><code>page.visit()</code> — קורא ל-<code>cy.mockGovPages()</code> ו-<code>cy.visit()</code> דרך ה-POM</li>
-        <li><code>page.triggerApiFetch(...)</code> — מפעיל את הבקשות ב-<code>win.fetch()</code> דרך ה-POM</li>
-        <li><code>cy.wait('@alias')</code> — עוצר את הטסט עד שהבקשה חוזרת</li>
-        <li><code>.its('response.statusCode').should('eq', 200)</code> — מוודא שהסטטוס הוא 200</li>
+        <li><code>cy.fixture('api-endpoints')</code> — טוען את רשימת ה-endpoints והסטטוס הצפוי מה-JSON</li>
+        <li><code>page.visit().triggerApiFetch(...paths)</code> — ביקור בדף והפעלת הבקשות דרך ה-POM</li>
+        <li><code>data.endpoints.forEach()</code> — עובר על כל endpoint ומוודא שקיבל <code>200</code></li>
+        <li>הוספת endpoint חדש לבדיקה = שורה אחת ב-<code>api-endpoints.json</code> בלבד</li>
       </ul>
     </div>
   </div>
@@ -411,14 +476,15 @@ cy.wait(<span class="string">'@accessibilitytype'</span>).its(<span class="strin
 
 <span class="keyword">const</span> page = <span class="keyword">new</span> <span class="highlight">GovHomePage</span>()
 
+cy.fixture(<span class="string">'prime-ministers-office'</span>).then((dept) => {
 <span class="comment">// 1. visit() רושם את mockGovPages intercepts (כולל catch-all על /he/**)</span>
 page.visit()
 
 <span class="comment">// 2. רושם את @primeMinistersOffice אחרי mockGovPages — כך הוא גובר עליו</span>
-cy.intercept(<span class="string">'GET'</span>, <span class="string">'**/prime_ministers_office**'</span>, (req) => {
+cy.intercept(<span class="string">'GET'</span>, dept.interceptPattern, (req) => {
   <span class="keyword">const</span> responseBody = {
-    title: <span class="string">'משרד ראש הממשלה'</span>,
-    department: { title: <span class="string">'משרד ראש הממשלה'</span> },
+    title: dept.originalTitle,
+    department: { title: dept.originalTitle },
   }
 
   <span class="comment">// פונקציה רקורסיבית שמוצאת ומשנה title בכל מבנה JSON</span>
@@ -426,8 +492,8 @@ cy.intercept(<span class="string">'GET'</span>, <span class="string">'**/prime_m
     <span class="keyword">if</span> (Array.isArray(node)) {
       node.forEach(<span class="highlight">modifyTitle</span>)
     } <span class="keyword">else if</span> (node && <span class="keyword">typeof</span> node === <span class="string">'object'</span>) {
-      <span class="keyword">if</span> (node.title === <span class="string">'משרד ראש הממשלה'</span>) {
-        node.title = <span class="string">'office משרד ראש הממשלה'</span>
+      <span class="keyword">if</span> (node.title === dept.originalTitle) {
+        node.title = dept.modifiedTitle
       }
       Object.values(node).forEach((v) => {
         <span class="keyword">if</span> (<span class="keyword">typeof</span> v === <span class="string">'object'</span>) <span class="highlight">modifyTitle</span>(v)
@@ -440,11 +506,12 @@ cy.intercept(<span class="string">'GET'</span>, <span class="string">'**/prime_m
 }).as(<span class="string">'primeMinistersOffice'</span>)
 
 <span class="comment">// 3. מפעיל את הבקשה אחרי רישום ה-intercept</span>
-page.triggerApiFetch(<span class="string">'/he/departments/prime_ministers_office'</span>)
+page.triggerApiFetch(dept.apiPath)
 
 cy.wait(<span class="string">'@primeMinistersOffice'</span>)
   .its(<span class="string">'response.body.title'</span>)
-  .should(<span class="string">'eq'</span>, <span class="string">'office משרד ראש הממשלה'</span>)</code></pre>
+  .should(<span class="string">'eq'</span>, dept.modifiedTitle)
+})</code></pre>
 
       <p><strong>למה צריך פונקציה רקורסיבית?</strong></p>
       <p>
@@ -500,24 +567,24 @@ cy.wait(<span class="string">'@primeMinistersOffice'</span>)
 <span class="highlight">describe</span>(<span class="string">'my.gov.il - Personal Area'</span>, () => {
   <span class="keyword">let</span> page
 
-  beforeEach(() => { page = <span class="keyword">new</span> <span class="highlight">MyGovPage</span>(); page.visit() })
-
-  <span class="highlight">describe</span>(<span class="string">'Navigation Bar'</span>, () => {
-    it(<span class="string">'should display the navigation menu'</span>, () => page.verifyNavVisible())
-    it(<span class="string">'should highlight the active tab'</span>, () => page.verifyActiveTabExists())
+  beforeEach(() => {
+    cy.fixture(<span class="string">'my-gov-tabs'</span>).as(<span class="string">'tabs'</span>)  <span class="comment">// טוען fixture פעם אחת לכל טסט</span>
+    page = <span class="keyword">new</span> <span class="highlight">MyGovPage</span>(); page.visit()
   })
 
   <span class="highlight">describe</span>(<span class="string">'Tab: תשלומים'</span>, () => {
     beforeEach(() => page.clickTab(<span class="string">'תשלומים'</span>))
-    it(<span class="string">'should navigate to payments'</span>, () => page.verifyUrlIncludes(<span class="string">'payments'</span>))
-    it(<span class="string">'should display payments list'</span>, () => cy.get(<span class="string">'[class*="payment"]'</span>).should(<span class="string">'exist'</span>))
+
+    <span class="comment">// function() — חובה (לא arrow) כדי ש-this.tabs יעבוד</span>
+    it(<span class="string">'should navigate to payments'</span>, <span class="keyword">function</span>() {
+      <span class="keyword">const</span> { urlSegment } = <span class="keyword">this</span>.tabs.find((t) => t.label === <span class="string">'תשלומים'</span>)
+      page.verifyUrlIncludes(urlSegment)
+    })
     ...
   })
 
   <span class="highlight">describe</span>(<span class="string">'Tab: פניות'</span>, () => { ... })
-  <span class="highlight">describe</span>(<span class="string">'Tab: מסמכים'</span>, () => { ... })
-  <span class="highlight">describe</span>(<span class="string">'Tab: הגדרות'</span>, () => { ... })
-  <span class="highlight">describe</span>(<span class="string">'Tab: שירותים'</span>, () => { ... })
+  <span class="comment">// אותו דפוס לכל 5 הטאבים</span>
 })</code></pre>
 
       <p><strong>עקרונות הארגון:</strong></p>
