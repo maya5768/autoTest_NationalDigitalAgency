@@ -15,7 +15,7 @@ describe('Intercept and Modify Response - Prime Ministers Office', () => {
     // then register @primeMinistersOffice last so it takes priority over the /he/** catch-all
     page.visit()
 
-    cy.intercept('GET', '**/prime_ministers_office**', (req) => {
+    cy.intercept('GET', dept.interceptPattern, (req) => {
       const responseBody = {
         title: dept.originalTitle,
         department: { title: dept.originalTitle },

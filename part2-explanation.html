@@ -3,608 +3,1028 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Part II – Cypress | הסבר פתרון</title>
+  <title>Part II – Cypress | הסבר מלא</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef2f7; color: #1e293b; line-height: 1.75; }
 
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f4f6f9;
-      color: #1e293b;
-      line-height: 1.7;
-    }
+    header { background: linear-gradient(135deg, #0d47a1, #1a73e8 60%, #1565c0); color: white; padding: 48px 60px 36px; }
+    header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 8px; }
+    header .subtitle { font-size: 1rem; opacity: 0.85; margin-bottom: 4px; }
+    header .meta { font-size: 0.85rem; opacity: 0.65; }
 
-    header {
-      background: linear-gradient(135deg, #0f4c81, #1a73e8);
-      color: white;
-      padding: 40px 60px;
-    }
+    .toc { background: white; border-bottom: 3px solid #e2e8f0; padding: 14px 60px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .toc a { color: #1a73e8; text-decoration: none; font-size: 0.82rem; padding: 4px 12px; border: 1px solid #93c5fd; border-radius: 20px; white-space: nowrap; }
+    .toc a:hover { background: #eff6ff; }
 
-    header h1 { font-size: 2rem; margin-bottom: 8px; }
-    header p  { font-size: 1rem; opacity: 0.85; }
+    .container { max-width: 980px; margin: 40px auto; padding: 0 24px 80px; }
 
-    .container {
-      max-width: 960px;
-      margin: 40px auto;
-      padding: 0 24px 60px;
-    }
+    .card { background: white; border-radius: 14px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); margin-bottom: 40px; overflow: hidden; }
+    .card-header { display: flex; align-items: center; gap: 16px; padding: 22px 30px; color: white; }
+    .card-header.blue   { background: linear-gradient(135deg, #1a73e8, #1565c0); }
+    .card-header.green  { background: linear-gradient(135deg, #059669, #047857); }
+    .card-header.purple { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+    .card-header.teal   { background: linear-gradient(135deg, #0891b2, #0e7490); }
+    .card-header.rose   { background: linear-gradient(135deg, #e11d48, #be185d); }
+    .card-header.orange { background: linear-gradient(135deg, #ea580c, #c2410c); }
+    .card-header.indigo { background: linear-gradient(135deg, #4f46e5, #4338ca); }
+    .card-header.slate  { background: linear-gradient(135deg, #475569, #334155); }
+    .card-header .num { background: rgba(255,255,255,0.25); font-weight: 800; font-size: 1rem; min-width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .card-header h2 { font-size: 1.2rem; font-weight: 600; }
+    .card-header .sub { font-size: 0.82rem; opacity: 0.8; margin-top: 2px; }
 
-    .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-      margin-bottom: 36px;
-      overflow: hidden;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 20px 28px;
-      background: #1a73e8;
-      color: white;
-    }
-
-    .card-header .num {
-      background: white;
-      color: #1a73e8;
-      font-weight: 700;
-      font-size: 1.1rem;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .card-header h2 { font-size: 1.15rem; }
-
-    .card-body { padding: 28px; }
-
-    .card-body p  { margin-bottom: 14px; }
-    .card-body ul { padding-right: 22px; margin-bottom: 14px; }
+    .card-body { padding: 30px; }
+    .card-body p { margin-bottom: 14px; }
+    .card-body ul, .card-body ol { padding-right: 24px; margin-bottom: 14px; }
     .card-body li { margin-bottom: 6px; }
+    .card-body h3 { font-size: 1rem; font-weight: 700; margin: 22px 0 10px; color: #1e293b; border-bottom: 2px solid #f1f5f9; padding-bottom: 6px; }
+    .card-body h4 { font-size: 0.9rem; font-weight: 600; margin: 16px 0 8px; color: #334155; }
 
-    .label {
-      display: inline-block;
-      background: #e8f0fe;
-      color: #1a73e8;
-      font-size: 0.78rem;
-      font-weight: 600;
-      padding: 2px 10px;
-      border-radius: 20px;
-      margin-bottom: 10px;
-    }
+    pre { background: #0f172a; color: #cbd5e1; border-radius: 10px; padding: 20px 24px; font-size: 0.84rem; overflow-x: auto; margin: 14px 0; direction: ltr; text-align: left; line-height: 1.65; border: 1px solid #1e293b; }
+    code { font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace; }
 
-    pre {
-      background: #1e293b;
-      color: #e2e8f0;
-      border-radius: 8px;
-      padding: 20px 24px;
-      font-size: 0.88rem;
-      overflow-x: auto;
-      margin: 16px 0;
-      direction: ltr;
-      text-align: left;
-    }
+    .kw   { color: #f472b6; }
+    .str  { color: #86efac; }
+    .cmt  { color: #64748b; font-style: italic; }
+    .fn   { color: #93c5fd; }
+    .cls  { color: #fbbf24; }
+    .num  { color: #fb923c; }
+    .prop { color: #c4b5fd; }
 
-    code { font-family: 'Consolas', 'Courier New', monospace; }
+    .file-badge { display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 14px; font-size: 0.82rem; font-family: monospace; color: #475569; margin: 8px 0 12px; }
+    .file-badge::before { content: '📄'; }
 
-    .highlight { color: #93c5fd; }
-    .string    { color: #86efac; }
-    .comment   { color: #94a3b8; font-style: italic; }
-    .keyword   { color: #f9a8d4; }
-
-    .file-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 4px 12px;
-      font-size: 0.82rem;
-      font-family: monospace;
-      color: #475569;
-      margin-bottom: 12px;
-    }
-
-    .file-badge::before {
-      content: '📄';
-      font-size: 0.9rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 14px 0;
-      font-size: 0.9rem;
-    }
-
-    th {
-      background: #f1f5f9;
-      padding: 10px 14px;
-      text-align: right;
-      font-weight: 600;
-      border-bottom: 2px solid #e2e8f0;
-    }
-
-    td {
-      padding: 10px 14px;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
+    table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.88rem; }
+    th { background: #f1f5f9; padding: 10px 16px; text-align: right; font-weight: 700; border-bottom: 2px solid #e2e8f0; color: #475569; }
+    td { padding: 10px 16px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
     tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafbff; }
 
-    .tag-oop   { background:#dcfce7; color:#166534; padding:2px 8px; border-radius:4px; font-size:0.78rem; font-weight:600; }
-    .tag-inter { background:#fef9c3; color:#854d0e; padding:2px 8px; border-radius:4px; font-size:0.78rem; font-weight:600; }
-    .tag-mod   { background:#fce7f3; color:#9d174d; padding:2px 8px; border-radius:4px; font-size:0.78rem; font-weight:600; }
+    .note { background: #fffbeb; border-right: 4px solid #f59e0b; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 0.88rem; }
+    .note strong { color: #92400e; }
+    .info { background: #eff6ff; border-right: 4px solid #3b82f6; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 0.88rem; }
+    .success-note { background: #f0fdf4; border-right: 4px solid #22c55e; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 0.88rem; }
 
-    .note {
-      background: #fffbeb;
-      border-right: 4px solid #f59e0b;
-      padding: 14px 18px;
-      border-radius: 0 8px 8px 0;
-      margin: 16px 0;
-      font-size: 0.9rem;
+    .tag { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-left: 4px; vertical-align: middle; }
+    .tag-blue   { background: #dbeafe; color: #1e40af; }
+    .tag-green  { background: #dcfce7; color: #166534; }
+    .tag-purple { background: #f3e8ff; color: #6b21a8; }
+    .tag-amber  { background: #fef3c7; color: #92400e; }
+
+    .tree { background: #0f172a; color: #94a3b8; border-radius: 10px; padding: 20px 24px; font-family: monospace; font-size: 0.83rem; direction: ltr; text-align: left; line-height: 2; }
+    .tree .folder { color: #fbbf24; font-weight: 600; }
+    .tree .file   { color: #86efac; }
+    .tree .note-i { color: #64748b; }
+    .tree .q      { color: #93c5fd; font-weight: 600; }
+
+    .section-label { display: flex; align-items: center; gap: 12px; margin: 48px 0 20px; color: #94a3b8; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+    .section-label::before, .section-label::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+
+    .steps { list-style: none; padding: 0; counter-reset: step; }
+    .steps li { counter-increment: step; display: flex; gap: 14px; margin-bottom: 12px; align-items: flex-start; }
+    .steps li::before { content: counter(step); background: #1a73e8; color: white; font-weight: 700; font-size: 0.8rem; min-width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+    @media (max-width: 640px) {
+      header { padding: 30px 24px 24px; }
+      header h1 { font-size: 1.5rem; }
+      .toc { padding: 12px 24px; }
+      .card-body { padding: 20px; }
     }
-
-    .structure-tree {
-      background: #1e293b;
-      color: #94a3b8;
-      border-radius: 8px;
-      padding: 20px 24px;
-      font-family: monospace;
-      font-size: 0.88rem;
-      direction: ltr;
-      text-align: left;
-      line-height: 1.9;
-    }
-
-    .structure-tree .folder { color: #fbbf24; }
-    .structure-tree .file   { color: #86efac; }
-    .structure-tree .note-inline { color: #64748b; }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>מבחן בודק אוטומציה – Part II | Cypress</h1>
-  <p>הסבר מלא של הפתרון לכל שאלה בחלק השני</p>
+  <h1>מבחן כניסה – בודק אוטומציה</h1>
+  <div class="subtitle">Part II — Cypress | הסבר מלא ומפורט של הפתרון</div>
+  <div class="meta">National Digital Agency (INPA) &nbsp;|&nbsp; מאי 2025</div>
 </header>
+
+<nav class="toc" aria-label="ניווט מהיר">
+  <a href="#structure">מבנה הפרויקט</a>
+  <a href="#config">cypress.config.js</a>
+  <a href="#e2ejs">support/e2e.js</a>
+  <a href="#govmock">support/govMock.js</a>
+  <a href="#pom">POM – 3 מחלקות</a>
+  <a href="#fixtures">Fixtures</a>
+  <a href="#q1">שאלה 1</a>
+  <a href="#q2">שאלה 2</a>
+  <a href="#q3">שאלה 3</a>
+  <a href="#q4">שאלה 4</a>
+  <a href="#q5">שאלה 5</a>
+  <a href="#limits">מגבלות</a>
+</nav>
 
 <div class="container">
 
-  <!-- ── מבנה הפרויקט ───────────────────────────────────────────── -->
-  <div class="card">
-    <div class="card-header">
-      <div class="num">🗂</div>
-      <h2>מבנה הפרויקט</h2>
-    </div>
-    <div class="card-body">
-      <p>הפרויקט מאורגן לפי הקונבנציה הרשמית של Cypress:</p>
-      <div class="structure-tree">
-<span class="folder">cypress/</span><br>
-├── <span class="folder">e2e/</span><br>
-│   ├── <span class="file">interceptStatusCode.cy.js</span> <span class="note-inline">← שאלה 3 – status 200</span><br>
-│   ├── <span class="file">modifyResponse.cy.js</span>      <span class="note-inline">← שאלה 4 – שינוי title</span><br>
-│   ├── <span class="file">myGovMenuTabs.cy.js</span>       <span class="note-inline">← שאלה 5 – my.gov טאבים</span><br>
-│   └── <span class="file">search.cy.js</span>              <span class="note-inline">← שאלה 2 – 5 טסטים לחיפוש</span><br>
-├── <span class="folder">fixtures/</span>                         <span class="note-inline">← נתוני טסט (JSON) מופרדים מהלוגיקה</span><br>
-│   ├── <span class="file">search-queries.json</span>       <span class="note-inline">← שאלה 2 – מחרוזות חיפוש בעברית</span><br>
-│   ├── <span class="file">api-endpoints.json</span>        <span class="note-inline">← שאלה 3 – endpoints + status צפוי</span><br>
-│   ├── <span class="file">prime-ministers-office.json</span><span class="note-inline">← שאלה 4 – כותרות + נתיב API</span><br>
-│   └── <span class="file">my-gov-tabs.json</span>          <span class="note-inline">← שאלה 5 – label + urlSegment לכל טאב</span><br>
-├── <span class="folder">pages/</span><br>
-│   ├── <span class="file">SearchPage.js</span>             <span class="note-inline">← Page Object לשאלה 2 (חיפוש)</span><br>
-│   ├── <span class="file">GovHomePage.js</span>            <span class="note-inline">← Page Object לשאלות 3 ו-4 (intercept)</span><br>
-│   └── <span class="file">MyGovPage.js</span>              <span class="note-inline">← Page Object לשאלה 5 (טאבי my.gov)</span><br>
-├── <span class="folder">screenshots/</span>                      <span class="note-inline">← נוצר אוטומטית בהרצה (מוחרג מ-git)</span><br>
-└── <span class="folder">support/</span><br>
-    ├── <span class="file">commands.js</span><br>
-    ├── <span class="file">e2e.js</span><br>
-    └── <span class="file">govMock.js</span>             <span class="note-inline">← mock מקומי בגלל חסימת Cloudflare</span><br>
-<span class="file">cypress.config.js</span>                 <span class="note-inline">← הגדרות כלליות</span><br>
-<span class="file">package.json</span><br>
-<span class="file">package-lock.json</span><br>
-<span class="file">part2-explanation.html</span>            <span class="note-inline">← קובץ הסבר זה</span><br>
-<span class="file">README.md</span>
-      </div>
-    </div>
+<!-- ═══════════════════════════════════════════════════════
+     מבנה הפרויקט
+═══════════════════════════════════════════════════════ -->
+<div class="card" id="structure">
+  <div class="card-header blue">
+    <div class="num">🗂</div>
+    <div><h2>מבנה הפרויקט</h2><div class="sub">ארכיטקטורה ותיאור כל קובץ</div></div>
   </div>
-
-  <!-- ── Fixtures ────────────────────────────────────────────────── -->
-  <div class="card">
-    <div class="card-header">
-      <div class="num">📦</div>
-      <h2>Fixtures – הפרדת נתוני טסט מלוגיקת הטסט</h2>
+  <div class="card-body">
+    <p>הפרויקט מאורגן לפי קונבנציית Cypress הרשמית, עם שכבות <strong>Page Object Model</strong> ו-<strong>Fixtures</strong> נוספות:</p>
+    <div class="tree">
+<span class="folder">autoTest_NationalDigitalAgency/</span><br>
+├── <span class="folder">cypress/</span><br>
+│   ├── <span class="folder">e2e/</span>                              <span class="note-i">← קבצי הטסטים (specs)</span><br>
+│   │   ├── <span class="file">search.cy.js</span>                  <span class="q">← שאלה 2</span>  <span class="note-i">5 טסטים לרכיב חיפוש</span><br>
+│   │   ├── <span class="file">interceptStatusCode.cy.js</span>     <span class="q">← שאלה 3</span>  <span class="note-i">אימות status 200</span><br>
+│   │   ├── <span class="file">modifyResponse.cy.js</span>          <span class="q">← שאלה 4</span>  <span class="note-i">שינוי title בתגובה</span><br>
+│   │   └── <span class="file">myGovMenuTabs.cy.js</span>           <span class="q">← שאלה 5</span>  <span class="note-i">טאבי my.gov (19 טסטים)</span><br>
+│   ├── <span class="folder">fixtures/</span>                         <span class="note-i">← נתוני טסט JSON בלבד</span><br>
+│   │   ├── <span class="file">search-queries.json</span>           <span class="q">← שאלה 2</span>  <span class="note-i">מחרוזות חיפוש עבריות</span><br>
+│   │   ├── <span class="file">api-endpoints.json</span>            <span class="q">← שאלה 3</span>  <span class="note-i">נתיבי API + status צפוי</span><br>
+│   │   ├── <span class="file">prime-ministers-office.json</span>   <span class="q">← שאלה 4</span>  <span class="note-i">כותרת מקורית + מתוקנת</span><br>
+│   │   └── <span class="file">my-gov-tabs.json</span>              <span class="q">← שאלה 5</span>  <span class="note-i">label + urlSegment לכל טאב</span><br>
+│   ├── <span class="folder">pages/</span>                            <span class="note-i">← Page Object Model</span><br>
+│   │   ├── <span class="file">SearchPage.js</span>                 <span class="q">← שאלה 2</span>  <span class="note-i">POM לרכיב חיפוש</span><br>
+│   │   ├── <span class="file">GovHomePage.js</span>                <span class="q">← שאלות 3+4</span>  <span class="note-i">POM לדף הבית</span><br>
+│   │   └── <span class="file">MyGovPage.js</span>                  <span class="q">← שאלה 5</span>  <span class="note-i">POM לאזור האישי</span><br>
+│   ├── <span class="folder">support/</span>                          <span class="note-i">← קוד שרץ לפני כל spec</span><br>
+│   │   ├── <span class="file">e2e.js</span>                        <span class="note-i">נקודת כניסה + עקיפת Cloudflare</span><br>
+│   │   └── <span class="file">govMock.js</span>                    <span class="note-i">8 intercepts + 2 עמודי HTML מקומיים</span><br>
+│   ├── <span class="folder">screenshots/</span>                      <span class="note-i">נוצר אוטומטית (מוחרג מ-git)</span><br>
+│   └── <span class="folder">videos/</span>                           <span class="note-i">נוצר אוטומטית (מוחרג מ-git)</span><br>
+├── <span class="file">cypress.config.js</span>                     <span class="note-i">הגדרות Cypress + Chrome flags</span><br>
+├── <span class="file">package.json</span>                          <span class="note-i">dependencies + scripts</span><br>
+├── <span class="file">README.md</span>                             <span class="note-i">הוראות הרצה + תיעוד שגיאות</span><br>
+├── <span class="file">part2-explanation.html</span>                <span class="note-i">הסבר Part II</span><br>
+├── <span class="file">part3-explanation.html</span>                <span class="note-i">הסבר Part III</span><br>
+└── <span class="file">autoTest_NationalDigitalAgency.postman_collection.json</span>  <span class="note-i">Part I</span>
     </div>
-    <div class="card-body">
-      <p>
-        כל נתוני הטסט (מחרוזות עברית, endpoint paths, response bodies) הועברו לקבצי JSON
-        בתיקיית <code>cypress/fixtures/</code>. הטסטים קוראים אותם עם <code>cy.fixture()</code>
-        במקום לכתוב ערכים hardcoded.
-      </p>
 
-      <p><strong>למה?</strong></p>
-      <ul>
-        <li>שינוי נתון (למשל שם טאב) דורש עדכון בקובץ JSON אחד בלבד — לא חיפוש בכל ה-specs</li>
-        <li>נתוני הטסט גלויים ומרוכזים, קל לקרוא ולהבין מה הטסט בודק</li>
-        <li>בסיס לdata-driven testing עתידי (הרצת אותו טסט על מספר ערכים)</li>
-      </ul>
-
-      <p><strong>דפוס השימוש — <code>cy.fixture().then()</code>:</strong></p>
-      <pre><code><span class="comment">// לפני – hardcoded</span>
-searchPage.typeQuery(<span class="string">'דרכון'</span>)
-
-<span class="comment">// אחרי – נתון מגיע מ-fixture</span>
-cy.fixture(<span class="string">'search-queries'</span>).then((q) => {
-  searchPage.typeQuery(q.passportQuery)
-})</code></pre>
-
-      <p><strong>דפוס השימוש — <code>.as()</code> ו-<code>this</code> (ב-myGovMenuTabs):</strong></p>
-      <pre><code><span class="comment">// טעינה פעם אחת ב-beforeEach</span>
-beforeEach(() => {
-  cy.fixture(<span class="string">'my-gov-tabs'</span>).as(<span class="string">'tabs'</span>)
-})
-
-<span class="comment">// שימוש בטסט — חובה function() ולא arrow function כדי ש-this יעבוד</span>
-it(<span class="string">'should navigate'</span>, <span class="keyword">function</span>() {
-  <span class="keyword">const</span> { urlSegment } = <span class="keyword">this</span>.tabs.find((t) => t.label === <span class="string">'תשלומים'</span>)
-  page.verifyUrlIncludes(urlSegment)
-})</code></pre>
-
-      <table>
-        <tr><th>קובץ Fixture</th><th>מכיל</th><th>משמש ב</th></tr>
-        <tr><td><code>search-queries.json</code></td><td>healthQuery, passportQuery, idQuery</td><td>search.cy.js</td></tr>
-        <tr><td><code>api-endpoints.json</code></td><td>endpoints[], expectedStatus</td><td>interceptStatusCode.cy.js</td></tr>
-        <tr><td><code>prime-ministers-office.json</code></td><td>originalTitle, modifiedTitle, apiPath</td><td>modifyResponse.cy.js</td></tr>
-        <tr><td><code>my-gov-tabs.json</code></td><td>label + urlSegment לכל טאב</td><td>myGovMenuTabs.cy.js</td></tr>
-      </table>
-    </div>
+    <h3>טבלת שאלות ↔ קבצים</h3>
+    <table>
+      <tr><th>שאלה</th><th>Spec</th><th>Page Object</th><th>Fixture</th></tr>
+      <tr><td><strong>1</strong> – התקנה</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td><strong>2</strong> – חיפוש</td><td>search.cy.js</td><td>SearchPage.js</td><td>search-queries.json</td></tr>
+      <tr><td><strong>3</strong> – Status Code</td><td>interceptStatusCode.cy.js</td><td>GovHomePage.js</td><td>api-endpoints.json</td></tr>
+      <tr><td><strong>4</strong> – שינוי תגובה</td><td>modifyResponse.cy.js</td><td>GovHomePage.js</td><td>prime-ministers-office.json</td></tr>
+      <tr><td><strong>5</strong> – my.gov טאבים</td><td>myGovMenuTabs.cy.js</td><td>MyGovPage.js</td><td>my-gov-tabs.json</td></tr>
+    </table>
   </div>
+</div>
 
-  <!-- ── שאלה 1 ─────────────────────────────────────────────────── -->
-  <div class="card">
-    <div class="card-header">
-      <div class="num">1</div>
-      <h2>התקנת Cypress על VS Code</h2>
-    </div>
-    <div class="card-body">
-      <p>Cypress הותקן כ-dev dependency בפרויקט:</p>
-      <pre><code><span class="comment">// package.json</span>
-{
-  <span class="string">"devDependencies"</span>: {
-    <span class="string">"cypress"</span>: <span class="string">"^13.17.0"</span>
+<!-- ═══════════════════════════════════════════════════════
+     cypress.config.js
+═══════════════════════════════════════════════════════ -->
+<div class="card" id="config">
+  <div class="card-header teal">
+    <div class="num">⚙</div>
+    <div><h2>cypress.config.js — קובץ הגדרות</h2><div class="sub">הגדרות בסיס + Chrome flags לעקיפת זיהוי אוטומציה</div></div>
+  </div>
+  <div class="card-body">
+    <div class="file-badge">cypress.config.js</div>
+    <pre><code><span class="kw">const</span> { defineConfig } = <span class="fn">require</span>(<span class="str">'cypress'</span>)
+
+<span class="prop">module.exports</span> = <span class="fn">defineConfig</span>({
+  <span class="prop">projectId</span>: <span class="str">'9k247g'</span>,
+  <span class="prop">e2e</span>: {
+    <span class="prop">baseUrl</span>: <span class="str">'https://www.gov.il'</span>,
+
+    <span class="fn">setupNodeEvents</span>(<span class="fn">on</span>) {
+      <span class="fn">on</span>(<span class="str">'before:browser:launch'</span>, (browser, launchOptions) => {
+        <span class="kw">if</span> (browser.name === <span class="str">'chrome'</span> || browser.name === <span class="str">'chromium'</span>) {
+          <span class="cmt">// מסיר את הדגל שמזהה כרום אוטומטי</span>
+          launchOptions.args.<span class="fn">push</span>(<span class="str">'--disable-blink-features=AutomationControlled'</span>)
+          <span class="cmt">// מסיר את הבאנר "Chrome is being controlled by automated software"</span>
+          launchOptions.args = launchOptions.args.<span class="fn">filter</span>(
+            (arg) => arg !== <span class="str">'--enable-automation'</span>
+          )
+          <span class="kw">return</span> launchOptions
+        }
+      })
+    },
+
+    <span class="prop">browser</span>: <span class="str">'chrome'</span>,
+    <span class="prop">viewportWidth</span>: <span class="num">1280</span>,
+    <span class="prop">viewportHeight</span>: <span class="num">720</span>,
+    <span class="prop">defaultCommandTimeout</span>: <span class="num">15000</span>,
+    <span class="prop">pageLoadTimeout</span>: <span class="num">60000</span>,
+    <span class="prop">chromeWebSecurity</span>: <span class="kw">false</span>,
+    <span class="prop">userAgent</span>:
+      <span class="str">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'</span>,
   },
-  <span class="string">"scripts"</span>: {
-    <span class="string">"cy:open"</span>: <span class="string">"cypress open"</span>,
-    <span class="string">"cy:run"</span>: <span class="string">"cypress run"</span>
+})</code></pre>
+
+    <h3>הסבר כל הגדרה</h3>
+    <table>
+      <tr><th>הגדרה</th><th>ערך</th><th>מטרה</th></tr>
+      <tr><td><code>baseUrl</code></td><td>https://www.gov.il</td><td>קידומת לכל <code>cy.visit()</code> — במקום לחזור על ה-URL המלא בכל טסט</td></tr>
+      <tr><td><code>browser</code></td><td>chrome</td><td>הרצה בכרום בלבד — אחידות בין מכונות dev ו-CI</td></tr>
+      <tr><td><code>viewportWidth/Height</code></td><td>1280×720</td><td>רזולוציית דסקטופ סטנדרטית — מבטיח תצוגה זהה למשתמש אנושי</td></tr>
+      <tr><td><code>defaultCommandTimeout</code></td><td>15,000ms</td><td>gov.il איטי לעיתים — 15 שניות מונע כשלים מיותרים</td></tr>
+      <tr><td><code>pageLoadTimeout</code></td><td>60,000ms</td><td>זמן מקסימלי לטעינת דף מלאה</td></tr>
+      <tr><td><code>chromeWebSecurity</code></td><td>false</td><td>מאפשר cross-origin — הכרחי כי suggestions עוברות דרך searchgov.gov.il</td></tr>
+      <tr><td><code>userAgent</code></td><td>Chrome/124 real string</td><td>מחליף את ה-User-Agent האוטומטי של Cypress. Cloudflare בודק שדה זה</td></tr>
+      <tr><td><code>--disable-blink-features=AutomationControlled</code></td><td>Chrome flag</td><td>מסיר את <code>navigator.webdriver=true</code> — הסימן הראשי לזיהוי Selenium</td></tr>
+      <tr><td><code>filter --enable-automation</code></td><td>מסנן דגל</td><td>מסיר את הבאנר הצהוב "Chrome is being controlled" — רמז חזותי + סימן נוסף לאוטומציה</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     support/e2e.js
+═══════════════════════════════════════════════════════ -->
+<div class="card" id="e2ejs">
+  <div class="card-header green">
+    <div class="num">🛡</div>
+    <div><h2>cypress/support/e2e.js — עקיפת זיהוי Cloudflare</h2><div class="sub">הוק window:before:load שמדמה דפדפן אנושי לפני כל טסט</div></div>
+  </div>
+  <div class="card-body">
+    <p>
+      קובץ זה נטען אוטומטית לפני כל spec. הוא עושה שני דברים:
+      <strong>(1)</strong> מייבא את <code>govMock.js</code> לרישום הפקודות המותאמות,
+      <strong>(2)</strong> מחבר הוק <code>window:before:load</code> שמשנה מאפייני הדפדפן לפני שהדף טוען קוד כלשהו.
+    </p>
+    <div class="file-badge">cypress/support/e2e.js</div>
+    <pre><code><span class="kw">import</span> <span class="str">'./govMock'</span>
+
+<span class="prop">Cypress</span>.<span class="fn">on</span>(<span class="str">'window:before:load'</span>, (win) => {
+
+  <span class="cmt">// 1. מסתיר את הדגל הראשי לזיהוי אוטומציה</span>
+  Object.<span class="fn">defineProperty</span>(win.navigator, <span class="str">'webdriver'</span>, { <span class="fn">get</span>: () => <span class="kw">undefined</span> })
+
+  <span class="cmt">// 2. מדמה פלאגינים של דפדפן אמיתי (כרום ריק מפלאגינים = חשוד)</span>
+  Object.<span class="fn">defineProperty</span>(win.navigator, <span class="str">'plugins'</span>, {
+    <span class="fn">get</span>: () => [
+      { name: <span class="str">'Chrome PDF Plugin'</span>,  filename: <span class="str">'internal-pdf-viewer'</span> },
+      { name: <span class="str">'Chrome PDF Viewer'</span>,  filename: <span class="str">'mhjfbmdgcfjbbpaeojofohoefgiehjai'</span> },
+      { name: <span class="str">'Native Client'</span>,      filename: <span class="str">'internal-nacl-plugin'</span> },
+    ],
+  })
+
+  <span class="cmt">// 3. מגדיר שפות ריאליסטיות לסביבה ישראלית</span>
+  Object.<span class="fn">defineProperty</span>(win.navigator, <span class="str">'languages'</span>, {
+    <span class="fn">get</span>: () => [<span class="str">'he-IL'</span>, <span class="str">'he'</span>, <span class="str">'en-US'</span>, <span class="str">'en'</span>],
+  })
+
+  <span class="cmt">// 4. מוסיף אובייקט chrome.runtime (קיים בדפדפן אמיתי, לא בכרום אוטומטי)</span>
+  win.<span class="prop">chrome</span> = {
+    runtime: {},
+    <span class="fn">loadTimes</span>: () => {},
+    <span class="fn">csi</span>: () => {},
+    app: {},
   }
-}</code></pre>
-      <p>קובץ הקונפיגורציה <code>cypress.config.js</code> מגדיר:</p>
-      <table>
-        <tr><th>הגדרה</th><th>ערך</th><th>סיבה</th></tr>
-        <tr><td><code>baseUrl</code></td><td>https://www.gov.il</td><td>URL בסיסי לכל הטסטים</td></tr>
-        <tr><td><code>browser</code></td><td>chrome</td><td>הרצה בכרום בלבד</td></tr>
-        <tr><td><code>chromeWebSecurity</code></td><td>false</td><td>מאפשר cross-origin (searchgov.gov.il)</td></tr>
-        <tr><td><code>defaultCommandTimeout</code></td><td>15000ms</td><td>gov.il איטי – צריך יותר זמן</td></tr>
-        <tr><td><code>userAgent</code></td><td>Chrome/124</td><td>מדמה User-Agent רגיל של דפדפן</td></tr>
-      </table>
 
-      <div class="note">
-        <strong>מגבלת הרצה מול האתר האמיתי:</strong>
-        האתר gov.il מוגן באמצעות Cloudflare Bot Protection ועלול לחסום דפדפן אוטומטי לפני שהטסטים מגיעים למסכים.
-        לכן ההרצה היציבה של המטלה משתמשת ב-<code>cy.intercept()</code> ובעמודי mock מקומיים מתוך
-        <code>cypress/support/govMock.js</code>. כך הבדיקות נשארות ניתנות להרצה, והמגבלה מתועדת כממצא QA.
-      </div>
+  <span class="cmt">// 5. מדמה Permissions API שמחזיר 'granted' (בוטים מחזירים שגיאה)</span>
+  Object.<span class="fn">defineProperty</span>(win.navigator, <span class="str">'permissions'</span>, {
+    <span class="fn">get</span>: () => ({
+      <span class="fn">query</span>: () => Promise.<span class="fn">resolve</span>({ state: <span class="str">'granted'</span> }),
+    }),
+  })
+})</code></pre>
 
-      <div class="note">
-        <strong>הערת סביבת עבודה:</strong>
-        אם Cypress נכשל עם <code>bad option: --smoke-test</code>, יש להסיר לפני ההרצה את המשתנה
-        <code>ELECTRON_RUN_AS_NODE</code> ב-PowerShell:
-        <code>Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue</code>.
-      </div>
+    <h3>מה כל שינוי עושה</h3>
+    <table>
+      <tr><th>מאפיין</th><th>בדפדפן אוטומטי</th><th>אחרי השינוי</th><th>למה חשוב</th></tr>
+      <tr><td><code>navigator.webdriver</code></td><td><code>true</code></td><td><code>undefined</code></td><td>הסימן הראשי לזיהוי WebDriver/Cypress שאותו Cloudflare בודק ראשון</td></tr>
+      <tr><td><code>navigator.plugins</code></td><td>[] ריק</td><td>3 פלאגינים של Chrome</td><td>דפדפן ללא פלאגינים = חשוד. כרום אמיתי תמיד מכיל לפחות PDF Plugin</td></tr>
+      <tr><td><code>navigator.languages</code></td><td>['en-US']</td><td>['he-IL','he','en-US','en']</td><td>מתאים לסביבה ישראלית. Fingerprinting כולל בדיקת שפה</td></tr>
+      <tr><td><code>window.chrome</code></td><td>לא קיים</td><td>אובייקט עם runtime, loadTimes</td><td>בכרום אמיתי window.chrome תמיד מוגדר — היעדרו הוא דגל אוטומציה</td></tr>
+      <tr><td><code>navigator.permissions</code></td><td>נחסם / שגיאה</td><td>מחזיר state: 'granted'</td><td>סקריפטי fingerprinting בודקים הרשאות ומשתמשים בתגובה לזיהוי</td></tr>
+    </table>
+
+    <div class="note">
+      <strong>למה window:before:load ולא beforeEach?</strong>
+      ההוק רץ <em>לפני שהדף טוען קוד JavaScript</em> — הזמן היחיד שבו ניתן להגדיר מאפייני navigator לפני שהאתר כבר קרא אותם. שינוי אחרי הטעינה יהיה מאוחר מדי.
     </div>
   </div>
+</div>
 
-  <!-- ── שאלה 2 ─────────────────────────────────────────────────── -->
-  <div class="card">
-    <div class="card-header">
-      <div class="num">2</div>
-      <h2>טסטים לרכיב החיפוש – OOP Structure</h2>
+<!-- ═══════════════════════════════════════════════════════
+     support/govMock.js
+═══════════════════════════════════════════════════════ -->
+<div class="card" id="govmock">
+  <div class="card-header purple">
+    <div class="num">🎭</div>
+    <div><h2>cypress/support/govMock.js — Mock מקומי</h2><div class="sub">הפקודה cy.mockGovPages() — הבסיס לכל הטסטים</div></div>
+  </div>
+  <div class="card-body">
+    <p>
+      הקובץ מגדיר פקודה מותאמת <code>cy.mockGovPages()</code> שרושמת 8 intercepts.
+      הוא גם מכיל שני עמודי HTML מלאים שמחליפים את האתרים האמיתיים.
+      כל טסט קורא ל-<code>cy.mockGovPages()</code> בתוך <code>visit()</code> של ה-POM.
+    </p>
+
+    <h3>8 ה-Intercepts — טבלה מלאה</h3>
+    <table>
+      <tr><th>#</th><th>Pattern</th><th>תגובה</th><th>Alias</th><th>משמש לשאלה</th></tr>
+      <tr><td>1</td><td><code>**/cities**</code></td><td>200 + [{id:1, name:'Jerusalem'}]</td><td><code>@cities</code></td><td>3 – status code</td></tr>
+      <tr><td>2</td><td><code>**/categories**</code></td><td>200 + [{id:1, name:'Documents'}]</td><td><code>@categories</code></td><td>3 – status code</td></tr>
+      <tr><td>3</td><td><code>**/accessibilitytype**</code></td><td>200 + [{id:1, name:'Online'}]</td><td><code>@accessibilitytype</code></td><td>3 – status code</td></tr>
+      <tr><td>4</td><td><code>**/he/**</code></td><td>200 + searchPageHtml</td><td><code>@govHome</code></td><td>2, 3, 4 – דף הבית</td></tr>
+      <tr><td>5</td><td><code>**/my-gov</code></td><td>200 + personalAreaHtml</td><td><code>@myGovLocal</code></td><td>5 – אזור אישי</td></tr>
+      <tr><td>6</td><td><code>https://my.gov.il</code></td><td>200 + personalAreaHtml</td><td><code>@myGovRoot</code></td><td>5 – domain root</td></tr>
+      <tr><td>7</td><td><code>https://my.gov.il/**</code></td><td>200 + personalAreaHtml</td><td><code>@myGov</code></td><td>5 – כל תת-נתיב</td></tr>
+      <tr><td>8</td><td><code>**/</code> (root)</td><td>200 + searchPageHtml</td><td><code>@govRoot</code></td><td>2 – visit('/')</td></tr>
+    </table>
+
+    <h3>עמוד Mock 1: searchPageHtml — דף הבית של gov.il</h3>
+    <p>עמוד HTML מינימלי שמדמה את ממשק חיפוש gov.il. מכיל:</p>
+    <ul>
+      <li><code>button.search-btn[aria-label="חיפוש"]</code> — כפתור החיפוש בהדר, שה-SearchPage.searchBtn getter מחפש</li>
+      <li><code>section.search-panel</code> — פאנל נסתר (<code>display:none</code>) שנפתח בלחיצה על הכפתור</li>
+      <li><code>input[type="search"].search-input</code> — שדה קלט עם <code>placeholder="חיפוש ב-gov.il"</code></li>
+      <li><code>div[role="listbox"].suggestions</code> — הצעות autocomplete, מוצגות כשיש טקסט בשדה</li>
+      <li><strong>JavaScript מובנה:</strong> click → פותח פאנל; input → מציג suggestions; form submit → pushState לנתיב חיפוש</li>
+    </ul>
+
+    <h3>עמוד Mock 2: personalAreaHtml — האזור האישי של my.gov.il</h3>
+    <p>עמוד HTML דו-עמודות שמדמה את ממשק my.gov. מכיל:</p>
+    <ul>
+      <li><code>nav[aria-label="תפריט אזור אישי"]</code> — סרגל ניווט עם 5 כפתורים: תשלומים, פניות, מסמכים, הגדרות, שירותים</li>
+      <li>5 sections: <code>#payments</code>, <code>#applications</code>, <code>#documents</code>, <code>#settings</code>, <code>#services</code></li>
+      <li>כל section מכיל רכיבים ספציפיים שהטסטים מחפשים: <code>.payment-item</code>, <code>.amount</code>, <code>.status</code>, <code>a[download]</code>, כפתור "שמור", <code>[role="alert"]</code>, <code>button.remove</code></li>
+      <li><strong>JavaScript מובנה:</strong> לחיצה על טאב → מחליף section ומעדכן URL ב-pushState + מעדכן <code>aria-selected="true"</code></li>
+    </ul>
+
+    <div class="note">
+      <strong>למה mock ולא האתר האמיתי?</strong>
+      gov.il מוגן ב-Cloudflare Bot Protection ו-my.gov.il דורש SSO ממשלתי.
+      ה-mock מאפשר הרצה יציבה ומוכיחה של לוגיקת הבדיקה כולה, תוך תיעוד המגבלה כממצא QA. ראה <a href="#limits">סעיף מגבלות</a>.
     </div>
-    <div class="card-body">
-      <span class="label">Page Object Model</span>
+  </div>
+</div>
 
-      <p>
-        נבחר דפוס <strong>Page Object Model (POM)</strong> כדי להפריד בין
-        לוגיקת הסלקטורים לבין לוגיקת הטסטים. כך הקוד קריא, ניתן לתחזוקה,
-        וכשה-DOM משתנה — משנים רק במקום אחד.
-      </p>
+<!-- ═══════════════════════════════════════════════════════
+     PAGE OBJECT MODEL
+═══════════════════════════════════════════════════════ -->
+<div class="card" id="pom">
+  <div class="card-header rose">
+    <div class="num">🏗</div>
+    <div><h2>Page Object Model (POM) — 3 מחלקות</h2><div class="sub">הפרדת סלקטורים מלוגיקת הטסט | JavaScript Classes</div></div>
+  </div>
+  <div class="card-body">
+    <p>
+      POM אומר שכל עמוד מוצג על ידי <strong>מחלקה אחת</strong> שמחזיקה את כל הסלקטורים, הפעולות והאסרציות.
+      הטסטים עצמם לא יודעים על CSS selectors — הם קוראים לשמות שיטות ברורים.
+    </p>
 
-      <div class="file-badge">cypress/pages/SearchPage.js</div>
-      <pre><code><span class="keyword">class</span> <span class="highlight">SearchPage</span> {
+    <div class="info">
+      <strong>עיקרון Single Responsibility:</strong>
+      שינוי ב-DOM (שם class שונה, selector חדש) מצריך עדכון במחלקה בלבד — לא בעשרות קבצי טסט.
+    </div>
 
-  <span class="comment">// Selectors — getters מחזירים cy.get() חדש בכל קריאה</span>
-  <span class="keyword">get</span> <span class="highlight">searchBtn</span>() {
-    <span class="keyword">return</span> cy.get(<span class="string">'button[aria-label*="חיפוש"], [class*="search-btn"]'</span>).first()
+    <div class="info">
+      <strong>Method Chaining — return this:</strong>
+      כל שיטה מחזירה <code>this</code>, מה שמאפשר שרשור:
+      <code>page.visit().openSearch().typeQuery('בריאות').verifySuggestionsVisible()</code>
+    </div>
+
+    <div class="info">
+      <strong>למה getters ולא משתנים?</strong>
+      Cypress עובד עם תור פקודות אסינכרוני. שמירת <code>const btn = cy.get('.search-btn')</code>
+      בתחילת הטסט תפעיל את הסלקטור לפני שה-DOM קיים. Getter מפעיל <code>cy.get()</code> מחדש בכל קריאה — תמיד ברגע הנכון.
+    </div>
+
+    <!-- SearchPage -->
+    <h3>📄 SearchPage.js — רכיב חיפוש (שאלה 2)</h3>
+    <div class="file-badge">cypress/pages/SearchPage.js</div>
+    <pre><code><span class="kw">class</span> <span class="cls">SearchPage</span> {
+
+  <span class="cmt">// ── Selectors (Getters) ─────────────────────────────────────────</span>
+
+  <span class="kw">get</span> <span class="fn">searchBtn</span>() {
+    <span class="cmt">// כפתור החיפוש בהדר — מחפש לפי aria-label או class</span>
+    <span class="kw">return</span> cy.<span class="fn">get</span>(<span class="str">'button[aria-label*="חיפוש"], [class*="search-btn"], [class*="searchBtn"]'</span>).<span class="fn">first</span>()
   }
 
-  <span class="keyword">get</span> <span class="highlight">searchInput</span>() {
-    <span class="keyword">return</span> cy.get(<span class="string">'input[placeholder*="חיפוש"], input[type="search"]'</span>).first()
+  <span class="kw">get</span> <span class="fn">searchInput</span>() {
+    <span class="kw">return</span> cy.<span class="fn">get</span>(<span class="str">'input[placeholder*="חיפוש"], input[type="search"], [class*="search-input"] input'</span>).<span class="fn">first</span>()
   }
 
-  <span class="keyword">get</span> <span class="highlight">searchSuggestions</span>() {
-    <span class="keyword">return</span> cy.get(<span class="string">'[role="listbox"], [class*="suggestions"]'</span>)
+  <span class="kw">get</span> <span class="fn">searchSuggestions</span>() {
+    <span class="kw">return</span> cy.<span class="fn">get</span>(<span class="str">'[role="listbox"], [class*="suggestions"], [class*="autocomplete"], [class*="Suggestions"]'</span>)
   }
 
-  <span class="comment">// Actions</span>
-  <span class="highlight">visit</span>()       { cy.mockGovPages(); cy.visit(<span class="string">'/'</span>); <span class="keyword">return this</span> }
-  <span class="highlight">openSearch</span>()  { <span class="keyword">this</span>.searchBtn.click(); <span class="keyword">return this</span> }
-  <span class="highlight">typeQuery</span>(q)  { <span class="keyword">this</span>.searchInput.should(<span class="string">'be.visible'</span>).type(q); <span class="keyword">return this</span> }
-  <span class="highlight">submit</span>()      { <span class="keyword">this</span>.searchInput.type(<span class="string">'{enter}'</span>); <span class="keyword">return this</span> }
-  <span class="highlight">search</span>(q)     { <span class="keyword">return this</span>.<span class="highlight">openSearch</span>().<span class="highlight">typeQuery</span>(q).<span class="highlight">submit</span>() }
+  <span class="kw">get</span> <span class="fn">searchResultsContainer</span>() {
+    <span class="kw">return</span> cy.<span class="fn">get</span>(<span class="str">'[class*="search-results"], [class*="searchResults"], .results'</span>)
+  }
 
-  <span class="comment">// Assertions</span>
-  <span class="highlight">verifySearchBtnVisible</span>()   { <span class="keyword">this</span>.searchBtn.should(<span class="string">'be.visible'</span>); <span class="keyword">return this</span> }
-  <span class="highlight">verifyInputVisible</span>()       { <span class="keyword">this</span>.searchInput.should(<span class="string">'be.visible'</span>); <span class="keyword">return this</span> }
-  <span class="highlight">verifySuggestionsVisible</span>() { <span class="keyword">this</span>.searchSuggestions.should(<span class="string">'be.visible'</span>); <span class="keyword">return this</span> }
+  <span class="cmt">// ── Actions ─────────────────────────────────────────────────────</span>
+
+  <span class="fn">visit</span>() {
+    cy.<span class="fn">mockGovPages</span>()                          <span class="cmt">// רושם את כל 8 ה-intercepts</span>
+    cy.<span class="fn">visit</span>(<span class="str">'/'</span>, { failOnStatusCode: <span class="kw">false</span> })
+    cy.<span class="fn">url</span>().<span class="fn">should</span>(<span class="str">'include'</span>, <span class="str">'gov.il'</span>)        <span class="cmt">// אימות בסיסי שהדף נטען</span>
+    <span class="kw">return this</span>
+  }
+
+  <span class="fn">openSearch</span>() { <span class="kw">this</span>.<span class="fn">searchBtn</span>.<span class="fn">click</span>(); <span class="kw">return this</span> }
+
+  <span class="fn">typeQuery</span>(query) {
+    <span class="kw">this</span>.<span class="fn">searchInput</span>.<span class="fn">should</span>(<span class="str">'be.visible'</span>).<span class="fn">type</span>(query)
+    <span class="kw">return this</span>
+  }
+
+  <span class="fn">clearInput</span>() { <span class="kw">this</span>.<span class="fn">searchInput</span>.<span class="fn">clear</span>(); <span class="kw">return this</span> }
+
+  <span class="fn">submit</span>() { <span class="kw">this</span>.<span class="fn">searchInput</span>.<span class="fn">type</span>(<span class="str">'{enter}'</span>); <span class="kw">return this</span> }
+
+  <span class="fn">search</span>(query) {                                <span class="cmt">// shortcut: open + type + submit</span>
+    <span class="kw">this</span>.<span class="fn">openSearch</span>().<span class="fn">typeQuery</span>(query).<span class="fn">submit</span>()
+    <span class="kw">return this</span>
+  }
+
+  <span class="cmt">// ── Assertions ───────────────────────────────────────────────────</span>
+
+  <span class="fn">verifySearchBtnVisible</span>()   { <span class="kw">this</span>.<span class="fn">searchBtn</span>.<span class="fn">should</span>(<span class="str">'be.visible'</span>); <span class="kw">return this</span> }
+  <span class="fn">verifyInputVisible</span>()       { <span class="kw">this</span>.<span class="fn">searchInput</span>.<span class="fn">should</span>(<span class="str">'be.visible'</span>); <span class="kw">return this</span> }
+  <span class="fn">verifySuggestionsVisible</span>() { <span class="kw">this</span>.<span class="fn">searchSuggestions</span>.<span class="fn">should</span>(<span class="str">'be.visible'</span>); <span class="kw">return this</span> }
+  <span class="fn">verifyInputEmpty</span>()         { <span class="kw">this</span>.<span class="fn">searchInput</span>.<span class="fn">should</span>(<span class="str">'have.value'</span>, <span class="str">''</span>); <span class="kw">return this</span> }
 }
 
-module.exports = SearchPage</code></pre>
+<span class="prop">module.exports</span> = <span class="cls">SearchPage</span></code></pre>
 
-      <div class="file-badge">cypress/e2e/search.cy.js</div>
-      <p>5 טסטים שמשתמשים ב-SearchPage. TC03–TC05 טוענים נתונים מ-fixture:</p>
-      <pre><code>cy.fixture(<span class="string">'search-queries'</span>).then((q) => {
-  searchPage.openSearch()
-  searchPage.typeQuery(q.healthQuery)    <span class="comment">// 'בריאות'</span>
-  searchPage.verifySuggestionsVisible()
-})</code></pre>
-      <table>
-        <tr><th>טסט</th><th>מה הוא בודק</th><th>Fixture</th></tr>
-        <tr><td>TC01</td><td>כפתור החיפוש מוצג ב-Header</td><td>—</td></tr>
-        <tr><td>TC02</td><td>לחיצה על הכפתור מציגה שדה קלט</td><td>—</td></tr>
-        <tr><td>TC03</td><td>הקלדה מציגה הצעות autocomplete</td><td>healthQuery</td></tr>
-        <tr><td>TC04</td><td>שליחת חיפוש מנווטת לדף תוצאות</td><td>passportQuery</td></tr>
-        <tr><td>TC05</td><td>ניקוי השדה מאפס את הערך ל-""</td><td>idQuery</td></tr>
-      </table>
+    <table>
+      <tr><th>קטגוריה</th><th>שיטה</th><th>מה עושה</th></tr>
+      <tr><td rowspan="4"><span class="tag tag-blue">Getters</span></td>
+        <td><code>searchBtn</code></td><td>כפתור חיפוש — aria-label / class*="search-btn"</td></tr>
+      <tr><td><code>searchInput</code></td><td>שדה קלט — type="search" / placeholder / class*="search-input"</td></tr>
+      <tr><td><code>searchSuggestions</code></td><td>הצעות autocomplete — role="listbox" / class*="suggestions"</td></tr>
+      <tr><td><code>searchResultsContainer</code></td><td>מיכל תוצאות חיפוש</td></tr>
+      <tr><td rowspan="5"><span class="tag tag-green">Actions</span></td>
+        <td><code>visit()</code></td><td>mock + cy.visit('/') + אימות URL</td></tr>
+      <tr><td><code>openSearch()</code></td><td>לחיצה על כפתור החיפוש</td></tr>
+      <tr><td><code>typeQuery(q)</code></td><td>הקלדה בשדה (ממתין שהשדה גלוי)</td></tr>
+      <tr><td><code>clearInput()</code></td><td>ניקוי שדה הקלט</td></tr>
+      <tr><td><code>search(q)</code></td><td>שורטקאט: openSearch + typeQuery + submit</td></tr>
+      <tr><td rowspan="4"><span class="tag tag-purple">Assertions</span></td>
+        <td><code>verifySearchBtnVisible()</code></td><td>כפתור גלוי</td></tr>
+      <tr><td><code>verifyInputVisible()</code></td><td>שדה קלט גלוי</td></tr>
+      <tr><td><code>verifySuggestionsVisible()</code></td><td>הצעות autocomplete גלויות</td></tr>
+      <tr><td><code>verifyInputEmpty()</code></td><td>ערך השדה === ''</td></tr>
+    </table>
 
-      <div class="note">
-        <strong>למה getters ולא משתנים רגילים?</strong><br>
-        Cypress פועל באופן אסינכרוני. אם נשמור <code>cy.get()</code> במשתנה בתחילת הטסט,
-        הסלקטור ירוץ לפני שה-DOM מוכן. Getter מחזיר חיפוש חדש בכל פעם שמשתמשים בו —
-        כך מובטח שהאלמנט ייחפש ברגע הנכון.
-      </div>
+    <!-- GovHomePage -->
+    <h3>📄 GovHomePage.js — דף הבית לאינטרסצפציה (שאלות 3 ו-4)</h3>
+    <div class="file-badge">cypress/pages/GovHomePage.js</div>
+    <pre><code><span class="kw">class</span> <span class="cls">GovHomePage</span> {
 
-      <div class="note">
-        <strong>התאמה לחסימת Cloudflare:</strong>
-        לפני <code>cy.visit()</code> מופעל <code>cy.mockGovPages()</code>, כדי שהבדיקות ירוצו מול עמוד mock יציב
-        שמכיל את כפתור החיפוש, שדה הקלט והצעות ההשלמה האוטומטית.
-      </div>
-    </div>
-  </div>
-
-  <!-- ── שאלה 3 ─────────────────────────────────────────────────── -->
-  <div class="card">
-    <div class="card-header">
-      <div class="num">3</div>
-      <h2>Intercept בקשות ובדיקת Status Code</h2>
-    </div>
-    <div class="card-body">
-      <span class="label">cy.intercept + cy.wait</span>
-
-      <p>
-        כאשר הדף נטען, הוא מבצע קריאות API לטעינת נתוני פילטר:
-        <strong>cities</strong>, <strong>categories</strong>, ו-<strong>accessibilitytype</strong>.
-        הטסט מיירט את שלושתן ומוודא שכל אחת מחזירה <code>200 OK</code>.
-      </p>
-
-      <p>
-        הטסט משתמש ב-<strong>GovHomePage</strong> — Page Object שעוטף את הביקור בדף ואת הפעלת הבקשות.
-        כך לוגיקת ה-setup מרוכזת במקום אחד ולא חוזרת בכל טסט.
-      </p>
-
-      <div class="file-badge">cypress/pages/GovHomePage.js</div>
-      <pre><code><span class="keyword">class</span> <span class="highlight">GovHomePage</span> {
-  <span class="highlight">visit</span>() {
-    cy.mockGovPages()
-    cy.visit(<span class="string">'/he/'</span>, { failOnStatusCode: <span class="keyword">false</span> })
-    <span class="keyword">return this</span>
+  <span class="fn">visit</span>() {
+    cy.<span class="fn">mockGovPages</span>()
+    cy.<span class="fn">visit</span>(<span class="str">'/he/'</span>, { failOnStatusCode: <span class="kw">false</span> })
+    <span class="kw">return this</span>
   }
 
-  <span class="highlight">triggerApiFetch</span>(...endpoints) {
-    cy.window().then((win) => {
-      endpoints.forEach((ep) => win.fetch(ep))
+  <span class="fn">triggerApiFetch</span>(...endpoints) {
+    <span class="cmt">// cy.window() מחזיר את אובייקט window של הדפדפן</span>
+    <span class="cmt">// window.fetch() מפעיל בקשות שנלכדות ע"י cy.intercept()</span>
+    cy.<span class="fn">window</span>().<span class="fn">then</span>((win) => {
+      endpoints.<span class="fn">forEach</span>((ep) => win.<span class="fn">fetch</span>(ep))
     })
-    <span class="keyword">return this</span>
+    <span class="kw">return this</span>
   }
-}</code></pre>
+}
 
-      <div class="file-badge">cypress/e2e/interceptStatusCode.cy.js</div>
-      <pre><code><span class="keyword">const</span> <span class="highlight">GovHomePage</span> = require(<span class="string">'../pages/GovHomePage'</span>)
+<span class="prop">module.exports</span> = <span class="cls">GovHomePage</span></code></pre>
 
-<span class="keyword">const</span> page = <span class="keyword">new</span> <span class="highlight">GovHomePage</span>()
+    <table>
+      <tr><th>שיטה</th><th>הסבר</th></tr>
+      <tr>
+        <td><code>visit()</code></td>
+        <td>רושם intercepts דרך <code>mockGovPages()</code> ואז מבקר ב-<code>/he/</code>. הסדר קריטי: intercepts חייבים להירשם <em>לפני</em> ה-visit.</td>
+      </tr>
+      <tr>
+        <td><code>triggerApiFetch(...endpoints)</code></td>
+        <td>קורא <code>window.fetch(path)</code> על כל endpoint. <strong>למה fetch ולא cy.request?</strong> — cy.intercept() לוכד רק בקשות שיוצאות מהדפדפן. cy.request() יוצא מ-Node.js ולא ייתפס.</td>
+      </tr>
+    </table>
 
-cy.fixture(<span class="string">'api-endpoints'</span>).then((data) => {
-  <span class="keyword">const</span> paths = data.endpoints.map((e) => e.path)
-  page.visit().triggerApiFetch(...paths)
+    <!-- MyGovPage -->
+    <h3>📄 MyGovPage.js — האזור האישי (שאלה 5)</h3>
+    <div class="file-badge">cypress/pages/MyGovPage.js</div>
+    <pre><code><span class="kw">class</span> <span class="cls">MyGovPage</span> {
 
-  data.endpoints.forEach((e) => {
-    cy.wait(<span class="string">`@${e.alias}`</span>)
-      .its(<span class="string">'response.statusCode'</span>)
-      .should(<span class="string">'eq'</span>, data.expectedStatus)
-  })
-})</code></pre>
+  <span class="cmt">// ── Selectors (Getters) ─────────────────────────────────────────</span>
 
-      <p><strong>הסבר השלבים:</strong></p>
-      <ul>
-        <li><code>cy.fixture('api-endpoints')</code> — טוען את רשימת ה-endpoints והסטטוס הצפוי מה-JSON</li>
-        <li><code>page.visit().triggerApiFetch(...paths)</code> — ביקור בדף והפעלת הבקשות דרך ה-POM</li>
-        <li><code>data.endpoints.forEach()</code> — עובר על כל endpoint ומוודא שקיבל <code>200</code></li>
-        <li>הוספת endpoint חדש לבדיקה = שורה אחת ב-<code>api-endpoints.json</code> בלבד</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- ── שאלה 4 ─────────────────────────────────────────────────── -->
-  <div class="card">
-    <div class="card-header">
-      <div class="num">4</div>
-      <h2>Intercept ושינוי ערך ה-title בתגובה</h2>
-    </div>
-    <div class="card-body">
-      <span class="label">cy.intercept + Response Modification</span>
-
-      <p>
-        כאשר נכנסים לדף של <strong>משרד ראש הממשלה</strong>, הדפדפן שולח בקשה לשרת
-        שמחזירה JSON עם <code>"title": "משרד ראש הממשלה"</code>.
-        המשימה היא ליירט את הבקשה <em>לפני</em> שהדפדפן מרנדר אותה,
-        ולשנות את ה-title ל-<code>"office משרד ראש הממשלה"</code>.
-      </p>
-
-      <p>
-        הטסט משתמש ב-<strong>GovHomePage</strong> לניהול ה-visit וה-fetch.
-        לוגיקת ה-intercept עצמה נשארת בתוך הטסט — היא ספציפית לטסט הזה ולא שייכת ל-POM.
-      </p>
-
-      <div class="file-badge">cypress/e2e/modifyResponse.cy.js</div>
-      <pre><code><span class="keyword">const</span> <span class="highlight">GovHomePage</span> = require(<span class="string">'../pages/GovHomePage'</span>)
-
-<span class="keyword">const</span> page = <span class="keyword">new</span> <span class="highlight">GovHomePage</span>()
-
-cy.fixture(<span class="string">'prime-ministers-office'</span>).then((dept) => {
-<span class="comment">// 1. visit() רושם את mockGovPages intercepts (כולל catch-all על /he/**)</span>
-page.visit()
-
-<span class="comment">// 2. רושם את @primeMinistersOffice אחרי mockGovPages — כך הוא גובר עליו</span>
-cy.intercept(<span class="string">'GET'</span>, dept.interceptPattern, (req) => {
-  <span class="keyword">const</span> responseBody = {
-    title: dept.originalTitle,
-    department: { title: dept.originalTitle },
+  <span class="kw">get</span> <span class="fn">nav</span>() {
+    <span class="kw">return</span> cy.<span class="fn">get</span>(<span class="str">'nav, [role="navigation"], [class*="sidebar"], [class*="menu"]'</span>)
   }
 
-  <span class="comment">// פונקציה רקורסיבית שמוצאת ומשנה title בכל מבנה JSON</span>
-  <span class="keyword">const</span> <span class="highlight">modifyTitle</span> = (node) => {
-    <span class="keyword">if</span> (Array.isArray(node)) {
-      node.forEach(<span class="highlight">modifyTitle</span>)
-    } <span class="keyword">else if</span> (node && <span class="keyword">typeof</span> node === <span class="string">'object'</span>) {
-      <span class="keyword">if</span> (node.title === dept.originalTitle) {
-        node.title = dept.modifiedTitle
-      }
-      Object.values(node).forEach((v) => {
-        <span class="keyword">if</span> (<span class="keyword">typeof</span> v === <span class="string">'object'</span>) <span class="highlight">modifyTitle</span>(v)
-      })
-    }
+  <span class="kw">get</span> <span class="fn">activeTab</span>() {
+    <span class="kw">return</span> cy.<span class="fn">get</span>(<span class="str">'[aria-selected="true"], [class*="active"], [class*="selected"]'</span>)
   }
 
-  <span class="highlight">modifyTitle</span>(responseBody)
-  req.reply({ statusCode: <span class="highlight">200</span>, body: responseBody })
-}).as(<span class="string">'primeMinistersOffice'</span>)
+  <span class="cmt">// ── Actions ─────────────────────────────────────────────────────</span>
 
-<span class="comment">// 3. מפעיל את הבקשה אחרי רישום ה-intercept</span>
-page.triggerApiFetch(dept.apiPath)
+  <span class="fn">visit</span>() {
+    cy.<span class="fn">mockGovPages</span>()
+    cy.<span class="fn">visit</span>(<span class="str">'/my-gov'</span>, { failOnStatusCode: <span class="kw">false</span> })
+    <span class="kw">return this</span>
+  }
 
-cy.wait(<span class="string">'@primeMinistersOffice'</span>)
-  .its(<span class="string">'response.body.title'</span>)
-  .should(<span class="string">'eq'</span>, dept.modifiedTitle)
-})</code></pre>
+  <span class="fn">clickTab</span>(label) {
+    cy.<span class="fn">contains</span>(<span class="str">'a, button'</span>, label).<span class="fn">click</span>()  <span class="cmt">// מחפש לפי טקסט עברי</span>
+    <span class="kw">return this</span>
+  }
 
-      <p><strong>למה צריך פונקציה רקורסיבית?</strong></p>
-      <p>
-        התגובה מהשרת היא JSON מקונן (nested) — אובייקטים בתוך מערכים בתוך אובייקטים.
-        הפונקציה <code>modifyTitle</code> עוברת על כל הענפים ומשנה את ה-title בכל מקום
-        שהוא מופיע, ללא תלות במבנה המדויק.
-      </p>
+  <span class="cmt">// ── Assertions ───────────────────────────────────────────────────</span>
 
-      <div class="note">
-        <strong>סדר רישום intercepts — חשוב:</strong>
-        ב-Cypress, ה-intercept האחרון שנרשם מנצח על בקשות תואמות.
-        <code>cy.mockGovPages()</code> רושם catch-all על <code>/he/**</code> —
-        לכן <code>@primeMinistersOffice</code> חייב להירשם <em>אחריו</em> (כלומר אחרי <code>page.visit()</code>)
-        כדי לתפוס את הבקשה ראשון.
-      </div>
-    </div>
+  <span class="fn">verifyNavVisible</span>()            { <span class="kw">this</span>.<span class="fn">nav</span>.<span class="fn">should</span>(<span class="str">'be.visible'</span>); <span class="kw">return this</span> }
+  <span class="fn">verifyActiveTabExists</span>()       { <span class="kw">this</span>.<span class="fn">activeTab</span>.<span class="fn">should</span>(<span class="str">'exist'</span>); <span class="kw">return this</span> }
+  <span class="fn">verifyUrlIncludes</span>(segment)    { cy.<span class="fn">url</span>().<span class="fn">should</span>(<span class="str">'include'</span>, segment); <span class="kw">return this</span> }
+}
+
+<span class="prop">module.exports</span> = <span class="cls">MyGovPage</span></code></pre>
+
+    <table>
+      <tr><th>קטגוריה</th><th>שיטה</th><th>הסבר</th></tr>
+      <tr><td rowspan="2"><span class="tag tag-blue">Getters</span></td>
+        <td><code>nav</code></td><td>אלמנט ניווט — nav / role=navigation / class*=sidebar</td></tr>
+      <tr><td><code>activeTab</code></td><td>הטאב הפעיל — aria-selected="true" / class*=active</td></tr>
+      <tr><td rowspan="2"><span class="tag tag-green">Actions</span></td>
+        <td><code>visit()</code></td><td>mock + cy.visit('/my-gov')</td></tr>
+      <tr><td><code>clickTab(label)</code></td><td>לחיצה על טאב לפי טקסט עברי — cy.contains('a, button', label)</td></tr>
+      <tr><td rowspan="3"><span class="tag tag-purple">Assertions</span></td>
+        <td><code>verifyNavVisible()</code></td><td>סרגל ניווט גלוי</td></tr>
+      <tr><td><code>verifyActiveTabExists()</code></td><td>יש טאב פעיל כלשהו</td></tr>
+      <tr><td><code>verifyUrlIncludes(segment)</code></td><td>URL מכיל את קטע הנתיב (payments, documents, ...)</td></tr>
+    </table>
   </div>
-
-  <!-- ── שאלה 5 ─────────────────────────────────────────────────── -->
-  <div class="card">
-    <div class="card-header">
-      <div class="num">5</div>
-      <h2>my.gov – ארגון test cases לכל טאבי התפריט</h2>
-    </div>
-    <div class="card-body">
-      <span class="label">describe נסטד לפי טאב</span>
-
-      <p>
-        הארגון מבוסס על <strong>describe מקונן (nested describe)</strong>:
-        describe חיצוני לכל העמוד, ובתוכו describe נפרד לכל טאב.
-        כך הדוח של Cypress מציג תוצאות מסודרות לפי טאב.
-      </p>
-
-      <p>
-        הטסט משתמש ב-<strong>MyGovPage</strong> — Page Object שעוטף את הביקור בדף, ניווט בין טאבים, ואסרציות בסיסיות.
-        סלקטורים ספציפיים לתוכן (פריטי תשלום, מסמכים וכו') נשארים בטסט עצמו — הם assertion-specific ולא שייכים ל-POM.
-      </p>
-
-      <div class="file-badge">cypress/pages/MyGovPage.js</div>
-      <pre><code><span class="keyword">class</span> <span class="highlight">MyGovPage</span> {
-  <span class="keyword">get</span> <span class="highlight">nav</span>()       { <span class="keyword">return</span> cy.get(<span class="string">'nav, [role="navigation"], [class*="menu"]'</span>) }
-  <span class="keyword">get</span> <span class="highlight">activeTab</span>() { <span class="keyword">return</span> cy.get(<span class="string">'[aria-selected="true"], [class*="active"]'</span>) }
-
-  <span class="highlight">visit</span>()            { cy.mockGovPages(); cy.visit(<span class="string">'/my-gov'</span>); <span class="keyword">return this</span> }
-  <span class="highlight">clickTab</span>(label)   { cy.contains(<span class="string">'a, button'</span>, label).click(); <span class="keyword">return this</span> }
-  <span class="highlight">verifyNavVisible</span>() { <span class="keyword">this</span>.nav.should(<span class="string">'be.visible'</span>); <span class="keyword">return this</span> }
-  <span class="highlight">verifyUrlIncludes</span>(segment) { cy.url().should(<span class="string">'include'</span>, segment); <span class="keyword">return this</span> }
-}</code></pre>
-
-      <div class="file-badge">cypress/e2e/myGovMenuTabs.cy.js</div>
-      <pre><code><span class="keyword">const</span> <span class="highlight">MyGovPage</span> = require(<span class="string">'../pages/MyGovPage'</span>)
-
-<span class="highlight">describe</span>(<span class="string">'my.gov.il - Personal Area'</span>, () => {
-  <span class="keyword">let</span> page
-
-  beforeEach(() => {
-    cy.fixture(<span class="string">'my-gov-tabs'</span>).as(<span class="string">'tabs'</span>)  <span class="comment">// טוען fixture פעם אחת לכל טסט</span>
-    page = <span class="keyword">new</span> <span class="highlight">MyGovPage</span>(); page.visit()
-  })
-
-  <span class="highlight">describe</span>(<span class="string">'Tab: תשלומים'</span>, () => {
-    beforeEach(() => page.clickTab(<span class="string">'תשלומים'</span>))
-
-    <span class="comment">// function() — חובה (לא arrow) כדי ש-this.tabs יעבוד</span>
-    it(<span class="string">'should navigate to payments'</span>, <span class="keyword">function</span>() {
-      <span class="keyword">const</span> { urlSegment } = <span class="keyword">this</span>.tabs.find((t) => t.label === <span class="string">'תשלומים'</span>)
-      page.verifyUrlIncludes(urlSegment)
-    })
-    ...
-  })
-
-  <span class="highlight">describe</span>(<span class="string">'Tab: פניות'</span>, () => { ... })
-  <span class="comment">// אותו דפוס לכל 5 הטאבים</span>
-})</code></pre>
-
-      <p><strong>עקרונות הארגון:</strong></p>
-      <ul>
-        <li><strong>MyGovPage</strong> — מרכז את כל הניווט והסלקטורים של העמוד במקום אחד</li>
-        <li><strong>beforeEach()</strong> חיצוני — <code>page.visit()</code> טוען מחדש את עמוד ה-mock לפני כל טסט</li>
-        <li><strong>beforeEach()</strong> בכל describe של טאב — <code>page.clickTab()</code> מנווט לטאב</li>
-        <li>כל טאב בודק: ניווט (URL), תצוגה (אלמנטים), פעולות (לחיצה, עריכה)</li>
-        <li>הטאבים נבדקים בעברית: תשלומים, פניות, מסמכים, הגדרות ושירותים</li>
-      </ul>
-
-      <div class="note">
-        <strong>הערת אימות:</strong> my.gov.il משתמש ב-eZimun (SSO ממשלתי).
-        בגלל שאין למטלה סביבת staging או הרשאות התחברות, הבדיקות רצות מול mock מקומי בנתיב
-        <code>/my-gov</code>. בסביבת בדיקות אמיתית היה נכון להשתמש ב-<code>cypress.env.json</code>
-        וב-<code>cy.session()</code> עם משתמש בדיקות מאושר.
-      </div>
-    </div>
-  </div>
-
 </div>
+
+<!-- ═══════════════════════════════════════════════════════
+     FIXTURES
+═══════════════════════════════════════════════════════ -->
+<div class="card" id="fixtures">
+  <div class="card-header orange">
+    <div class="num">📦</div>
+    <div><h2>Fixtures — הפרדת נתוני טסט</h2><div class="sub">ארבעה קובצי JSON שמרכזים את כל הנתונים</div></div>
+  </div>
+  <div class="card-body">
+    <p>Fixtures הם קבצי JSON ב-<code>cypress/fixtures/</code> — נתונים בלבד, ללא קוד.</p>
+
+    <div class="success-note">
+      <strong>היתרון:</strong> שינוי נתון (שם טאב, endpoint, כותרת) מצריך עדכון בקובץ JSON אחד בלבד. הסוויט הופך ל-<em>Data-Driven</em> וקל לתחזוקה.
+    </div>
+
+    <h3>דפוס 1: .then() — קריאה ישירה</h3>
+    <pre><code>cy.<span class="fn">fixture</span>(<span class="str">'search-queries'</span>).<span class="fn">then</span>((q) => {
+  searchPage.<span class="fn">typeQuery</span>(q.healthQuery)   <span class="cmt">// 'בריאות'</span>
+})</code></pre>
+
+    <h3>דפוס 2: .as() + this — לשימוש חוזר בכל describe</h3>
+    <pre><code><span class="fn">beforeEach</span>(() => {
+  cy.<span class="fn">fixture</span>(<span class="str">'my-gov-tabs'</span>).<span class="fn">as</span>(<span class="str">'tabs'</span>)   <span class="cmt">// alias לשימוש ב-this</span>
+})
+
+<span class="cmt">// חובה function() — arrow function לא יוצרת this משלה</span>
+<span class="fn">it</span>(<span class="str">'...'</span>, <span class="kw">function</span>() {
+  <span class="kw">const</span> { urlSegment } = <span class="kw">this</span>.tabs.<span class="fn">find</span>((t) => t.label === <span class="str">'תשלומים'</span>)
+  page.<span class="fn">verifyUrlIncludes</span>(urlSegment)   <span class="cmt">// 'payments'</span>
+})</code></pre>
+
+    <h3>search-queries.json</h3>
+    <div class="file-badge">cypress/fixtures/search-queries.json</div>
+    <pre><code>{
+  <span class="prop">"healthQuery"</span>:   <span class="str">"בריאות"</span>,
+  <span class="prop">"passportQuery"</span>: <span class="str">"דרכון"</span>,
+  <span class="prop">"idQuery"</span>:       <span class="str">"תעודת זהות"</span>
+}</code></pre>
+    <p>שלוש שאילתות חיפוש עבריות — אחת לכל אחד מ-TC03, TC04, TC05.</p>
+
+    <h3>api-endpoints.json</h3>
+    <div class="file-badge">cypress/fixtures/api-endpoints.json</div>
+    <pre><code>{
+  <span class="prop">"endpoints"</span>: [
+    { <span class="prop">"path"</span>: <span class="str">"/cities"</span>            },
+    { <span class="prop">"path"</span>: <span class="str">"/categories"</span>        },
+    { <span class="prop">"path"</span>: <span class="str">"/accessibilitytype"</span> }
+  ],
+  <span class="prop">"expectedStatus"</span>: <span class="num">200</span>
+}</code></pre>
+    <p>3 endpoints + status צפוי. הוספת endpoint חדש לבדיקה = שורה אחת בלבד.</p>
+
+    <h3>prime-ministers-office.json</h3>
+    <div class="file-badge">cypress/fixtures/prime-ministers-office.json</div>
+    <pre><code>{
+  <span class="prop">"apiPath"</span>:       <span class="str">"/he/departments/prime_ministers_office"</span>,
+  <span class="prop">"originalTitle"</span>: <span class="str">"משרד ראש הממשלה"</span>,
+  <span class="prop">"modifiedTitle"</span>: <span class="str">"office משרד ראש הממשלה"</span>
+}</code></pre>
+    <p>הנתיב, הכותרת המקורית, והכותרת המעודכנת — כל מה שדרוש לטסט שינוי התגובה.</p>
+
+    <h3>my-gov-tabs.json</h3>
+    <div class="file-badge">cypress/fixtures/my-gov-tabs.json</div>
+    <pre><code>[
+  { <span class="prop">"label"</span>: <span class="str">"תשלומים"</span>, <span class="prop">"urlSegment"</span>: <span class="str">"payments"</span>     },
+  { <span class="prop">"label"</span>: <span class="str">"פניות"</span>,   <span class="prop">"urlSegment"</span>: <span class="str">"applications"</span>  },
+  { <span class="prop">"label"</span>: <span class="str">"מסמכים"</span>,  <span class="prop">"urlSegment"</span>: <span class="str">"documents"</span>     },
+  { <span class="prop">"label"</span>: <span class="str">"הגדרות"</span>,  <span class="prop">"urlSegment"</span>: <span class="str">"settings"</span>      },
+  { <span class="prop">"label"</span>: <span class="str">"שירותים"</span>, <span class="prop">"urlSegment"</span>: <span class="str">"services"</span>      }
+]</code></pre>
+    <p>לכל טאב: תווית עברית (לחיפוש ב-DOM) ו-URL segment (לאימות ניווט).</p>
+
+    <h3>סיכום</h3>
+    <table>
+      <tr><th>קובץ</th><th>שדות</th><th>Spec</th><th>דפוס טעינה</th></tr>
+      <tr><td><code>search-queries.json</code></td><td>healthQuery, passportQuery, idQuery</td><td>search.cy.js</td><td><code>.as('q')</code> + <code>this.q</code></td></tr>
+      <tr><td><code>api-endpoints.json</code></td><td>endpoints[], expectedStatus</td><td>interceptStatusCode.cy.js</td><td><code>.as('apiData')</code> + <code>this.apiData</code></td></tr>
+      <tr><td><code>prime-ministers-office.json</code></td><td>apiPath, originalTitle, modifiedTitle</td><td>modifyResponse.cy.js</td><td><code>.as('dept')</code> + <code>this.dept</code></td></tr>
+      <tr><td><code>my-gov-tabs.json</code></td><td>label, urlSegment (מערך)</td><td>myGovMenuTabs.cy.js</td><td><code>.as('tabs')</code> + <code>this.tabs.find()</code></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     QUESTIONS
+═══════════════════════════════════════════════════════ -->
+<div class="section-label">פתרונות לשאלות</div>
+
+<!-- Q1 -->
+<div class="card" id="q1">
+  <div class="card-header indigo">
+    <div class="num">1</div>
+    <div><h2>שאלה 1 — התקנת Cypress ו-VS Code</h2><div class="sub">הגדרת סביבת עבודה מוכנה לריצה</div></div>
+  </div>
+  <div class="card-body">
+    <h3>התקנה</h3>
+    <pre><code><span class="cmt"># יצירת פרויקט</span>
+npm init -y
+
+<span class="cmt"># התקנת Cypress</span>
+npm install --save-dev cypress</code></pre>
+
+    <div class="file-badge">package.json</div>
+    <pre><code>{
+  <span class="prop">"devDependencies"</span>: { <span class="prop">"cypress"</span>: <span class="str">"^13.17.0"</span> },
+  <span class="prop">"scripts"</span>: {
+    <span class="prop">"cy:open"</span>: <span class="str">"cypress open"</span>,
+    <span class="prop">"cy:run"</span>:  <span class="str">"cypress run"</span>
+  }
+}</code></pre>
+
+    <h3>הרצה</h3>
+    <pre><code><span class="cmt"># ממשק גרפי אינטרקטיבי — בוחרים spec ורואים הרצה חיה</span>
+npm run cy:open
+
+<span class="cmt"># הרצה headless לCI/CD — פלט טרמינל בלבד</span>
+npm run cy:run</code></pre>
+
+    <h3>תוסף VS Code מומלץ</h3>
+    <p><strong>Cypress Snippets</strong> — השלמה אוטומטית לכל פקודות Cypress. מותקן דרך Extensions (Ctrl+Shift+X).</p>
+
+    <h3>שגיאה ידועה בסביבת Windows</h3>
+    <p>אם Cypress נכשל עם <code>bad option: --smoke-test</code>:</p>
+    <pre><code><span class="cmt"># PowerShell — מסיר משתנה שגורם לבעיה</span>
+Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue
+npm run cy:run</code></pre>
+
+    <div class="note">
+      <strong>מגבלה ידועה:</strong> gov.il מוגן ב-Cloudflare ומחזיר 403 לדפדפן אוטומטי.
+      הפרויקט פותר זאת ב-<code>govMock.js</code>. ראה <a href="#limits">סעיף מגבלות</a>.
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="card" id="q2">
+  <div class="card-header blue">
+    <div class="num">2</div>
+    <div><h2>שאלה 2 — 5 טסטים לרכיב החיפוש</h2><div class="sub">SearchPage POM + cy.fixture() + 5 test cases</div></div>
+  </div>
+  <div class="card-body">
+    <div class="file-badge">cypress/e2e/search.cy.js</div>
+    <pre><code><span class="kw">const</span> <span class="cls">SearchPage</span> = <span class="fn">require</span>(<span class="str">'../pages/SearchPage'</span>)
+
+<span class="fn">describe</span>(<span class="str">'Search Component Tests - gov.il Header'</span>, () => {
+  <span class="kw">const</span> searchPage = <span class="kw">new</span> <span class="cls">SearchPage</span>()
+
+  <span class="fn">beforeEach</span>(() => {
+    cy.<span class="fn">fixture</span>(<span class="str">'search-queries'</span>).<span class="fn">as</span>(<span class="str">'q'</span>)  <span class="cmt">// טוען fixture לפני כל it</span>
+    searchPage.<span class="fn">visit</span>()                    <span class="cmt">// mock + cy.visit('/')</span>
+  })
+
+  <span class="fn">it</span>(<span class="str">'TC01 - search button is visible in the header'</span>, () => {
+    searchPage.<span class="fn">verifySearchBtnVisible</span>()
+  })
+
+  <span class="fn">it</span>(<span class="str">'TC02 - clicking the search button reveals the search input'</span>, () => {
+    searchPage.<span class="fn">openSearch</span>().<span class="fn">verifyInputVisible</span>()
+  })
+
+  <span class="fn">it</span>(<span class="str">'TC03 - typing a query shows autocomplete suggestions'</span>, <span class="kw">function</span>() {
+    searchPage.<span class="fn">openSearch</span>().<span class="fn">typeQuery</span>(<span class="kw">this</span>.q.healthQuery)
+    searchPage.<span class="fn">verifySuggestionsVisible</span>()
+  })
+
+  <span class="fn">it</span>(<span class="str">'TC04 - submitting a search navigates to results page'</span>, <span class="kw">function</span>() {
+    searchPage.<span class="fn">search</span>(<span class="kw">this</span>.q.passportQuery)
+    cy.<span class="fn">url</span>().<span class="fn">should</span>(<span class="str">'satisfy'</span>, (url) =>
+      url.<span class="fn">includes</span>(<span class="str">'search'</span>) || url.<span class="fn">includes</span>(<span class="kw">this</span>.q.passportQuery) || url.<span class="fn">includes</span>(<span class="str">'query'</span>)
+    )
+  })
+
+  <span class="fn">it</span>(<span class="str">'TC05 - clearing the search input empties the field'</span>, <span class="kw">function</span>() {
+    searchPage.<span class="fn">openSearch</span>().<span class="fn">typeQuery</span>(<span class="kw">this</span>.q.idQuery).<span class="fn">clearInput</span>()
+    searchPage.<span class="fn">verifyInputEmpty</span>()
+  })
+})</code></pre>
+
+    <h3>5 מקרי הבדיקה</h3>
+    <table>
+      <tr><th>מזהה</th><th>מה נבדק</th><th>Fixture</th><th>POM Methods</th></tr>
+      <tr><td><span class="tag tag-blue">TC01</span></td><td>כפתור חיפוש גלוי ב-Header</td><td>—</td><td>verifySearchBtnVisible()</td></tr>
+      <tr><td><span class="tag tag-blue">TC02</span></td><td>לחיצה על הכפתור מציגה שדה קלט</td><td>—</td><td>openSearch(), verifyInputVisible()</td></tr>
+      <tr><td><span class="tag tag-blue">TC03</span></td><td>הקלדה מציגה הצעות autocomplete</td><td>healthQuery="בריאות"</td><td>typeQuery(), verifySuggestionsVisible()</td></tr>
+      <tr><td><span class="tag tag-blue">TC04</span></td><td>שליחת חיפוש מנווטת לדף תוצאות</td><td>passportQuery="דרכון"</td><td>search(), cy.url().should()</td></tr>
+      <tr><td><span class="tag tag-blue">TC05</span></td><td>ניקוי השדה מאפס את הערך</td><td>idQuery="תעודת זהות"</td><td>typeQuery(), clearInput(), verifyInputEmpty()</td></tr>
+    </table>
+
+    <div class="note">
+      <strong>TC03–TC05 — למה function() ולא arrow?</strong>
+      <code>this.q</code> הוא alias שהגדרנו עם <code>.as('q')</code>. Cypress מחבר alias לcontex של הטסט (<code>this</code>).
+      Arrow functions לא יוצרות <code>this</code> משלהן — חובה <code>function()</code>.
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="card" id="q3">
+  <div class="card-header green">
+    <div class="num">3</div>
+    <div><h2>שאלה 3 — Intercept ובדיקת Status Code</h2><div class="sub">cy.intercept + cy.wait + triggerApiFetch</div></div>
+  </div>
+  <div class="card-body">
+    <p>הטסט בודק שכאשר הדף נטען, שלוש בקשות API מחזירות <code>200 OK</code>.</p>
+
+    <div class="file-badge">cypress/e2e/interceptStatusCode.cy.js</div>
+    <pre><code><span class="kw">const</span> <span class="cls">GovHomePage</span> = <span class="fn">require</span>(<span class="str">'../pages/GovHomePage'</span>)
+
+<span class="fn">describe</span>(<span class="str">'Intercept API Requests - Status Code Validation'</span>, () => {
+  <span class="kw">let</span> page
+
+  <span class="fn">beforeEach</span>(() => {
+    cy.<span class="fn">fixture</span>(<span class="str">'api-endpoints'</span>).<span class="fn">as</span>(<span class="str">'apiData'</span>)
+    page = <span class="kw">new</span> <span class="cls">GovHomePage</span>()
+  })
+
+  <span class="fn">it</span>(<span class="str">'should return status 200 for all three API endpoints'</span>, <span class="kw">function</span>() {
+    <span class="kw">const</span> paths = <span class="kw">this</span>.apiData.endpoints.<span class="fn">map</span>((e) => e.path)
+
+    <span class="cmt">// visit() → mockGovPages() רושם @cities, @categories, @accessibilitytype</span>
+    page.<span class="fn">visit</span>().<span class="fn">triggerApiFetch</span>(...paths)
+
+    <span class="cmt">// ממתין לכל intercept ומאמת status = 200</span>
+    <span class="kw">this</span>.apiData.endpoints.<span class="fn">forEach</span>((e) => {
+      cy.<span class="fn">wait</span>(<span class="str">`@${e.alias}`</span>)
+        .<span class="fn">its</span>(<span class="str">'response.statusCode'</span>)
+        .<span class="fn">should</span>(<span class="str">'eq'</span>, <span class="kw">this</span>.apiData.expectedStatus)
+    })
+  })
+})</code></pre>
+
+    <h3>זרימת הטסט — שלב אחר שלב</h3>
+    <ol class="steps">
+      <li><strong>cy.fixture('api-endpoints')</strong> — טוען נתונים: רשימת נתיבים + status צפוי (200)</li>
+      <li><strong>page.visit()</strong> — מפעיל <code>mockGovPages()</code> שרושם intercepts כולל <code>@cities</code>, <code>@categories</code>, <code>@accessibilitytype</code></li>
+      <li><strong>triggerApiFetch(...paths)</strong> — קורא <code>window.fetch('/cities')</code>, <code>window.fetch('/categories')</code>, <code>window.fetch('/accessibilitytype')</code> מהדפדפן — הבקשות נלכדות ע"י ה-intercepts</li>
+      <li><strong>cy.wait('@alias')</strong> — ממתין עד שה-intercept תפס בקשה תואמת</li>
+      <li><strong>.its('response.statusCode').should('eq', 200)</strong> — מאמת שה-status הוא 200</li>
+    </ol>
+
+    <div class="note">
+      <strong>Aliases @cities, @categories, @accessibilitytype</strong> מוגדרים בתוך <code>govMock.js</code> ע"י <code>.as('cities')</code> וכו'. הטסט ממתין להם אחרי שהבקשות מופעלות.
+    </div>
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="card" id="q4">
+  <div class="card-header rose">
+    <div class="num">4</div>
+    <div><h2>שאלה 4 — Intercept ושינוי ה-title בתגובה</h2><div class="sub">cy.intercept + req.reply + recursive JSON traversal</div></div>
+  </div>
+  <div class="card-body">
+    <p>הטסט מיירט בקשה לנתיב משרד ראש הממשלה, משנה את שדה <code>title</code>, ומאמת שהשינוי בוצע.</p>
+
+    <div class="file-badge">cypress/e2e/modifyResponse.cy.js</div>
+    <pre><code><span class="kw">const</span> <span class="cls">GovHomePage</span> = <span class="fn">require</span>(<span class="str">'../pages/GovHomePage'</span>)
+
+<span class="fn">describe</span>(<span class="str">'Intercept and Modify Response - Prime Ministers Office'</span>, () => {
+  <span class="kw">let</span> page
+
+  <span class="fn">beforeEach</span>(() => {
+    cy.<span class="fn">fixture</span>(<span class="str">'prime-ministers-office'</span>).<span class="fn">as</span>(<span class="str">'dept'</span>)
+    page = <span class="kw">new</span> <span class="cls">GovHomePage</span>()
+  })
+
+  <span class="fn">it</span>(<span class="str">'should change the "title" prop to "office משרד ראש הממשלה"'</span>, <span class="kw">function</span>() {
+    <span class="kw">const</span> dept = <span class="kw">this</span>.dept
+
+    <span class="cmt">// שלב 1: visit() → mockGovPages() רושם catch-all /he/**</span>
+    page.<span class="fn">visit</span>()
+
+    <span class="cmt">// שלב 2: @primeMinistersOffice נרשם אחרי visit() — גובר על /he/**</span>
+    cy.<span class="fn">intercept</span>(<span class="str">'GET'</span>, dept.interceptPattern, (req) => {
+      <span class="kw">const</span> responseBody = {
+        title: dept.originalTitle,
+        department: { title: dept.originalTitle },
+      }
+
+      <span class="cmt">// פונקציה רקורסיבית — מוצאת ומשנה title בכל רמות ה-JSON</span>
+      <span class="kw">const</span> <span class="fn">modifyTitle</span> = (node) => {
+        <span class="kw">if</span> (Array.<span class="fn">isArray</span>(node)) {
+          node.<span class="fn">forEach</span>(<span class="fn">modifyTitle</span>)
+        } <span class="kw">else if</span> (node && <span class="kw">typeof</span> node === <span class="str">'object'</span>) {
+          <span class="kw">if</span> (node.title === dept.originalTitle) {
+            node.title = dept.modifiedTitle    <span class="cmt">// 'office משרד ראש הממשלה'</span>
+          }
+          Object.<span class="fn">values</span>(node).<span class="fn">forEach</span>((value) => {
+            <span class="kw">if</span> (<span class="kw">typeof</span> value === <span class="str">'object'</span>) <span class="fn">modifyTitle</span>(value)
+          })
+        }
+      }
+
+      <span class="fn">modifyTitle</span>(responseBody)
+      req.<span class="fn">reply</span>({ statusCode: <span class="num">200</span>, body: responseBody })
+    }).<span class="fn">as</span>(<span class="str">'primeMinistersOffice'</span>)
+
+    <span class="cmt">// שלב 3: הפעלת הבקשה אחרי רישום ה-intercept</span>
+    page.<span class="fn">triggerApiFetch</span>(dept.apiPath)
+
+    cy.<span class="fn">wait</span>(<span class="str">'@primeMinistersOffice'</span>)
+      .<span class="fn">its</span>(<span class="str">'response.body.title'</span>)
+      .<span class="fn">should</span>(<span class="str">'eq'</span>, dept.modifiedTitle)
+  })
+})</code></pre>
+
+    <h3>זרימת הטסט</h3>
+    <ol class="steps">
+      <li><strong>page.visit()</strong> — רושם catch-all <code>/he/**</code> דרך mockGovPages</li>
+      <li><strong>cy.intercept(dept.interceptPattern, handler)</strong> — רישום <em>אחרי</em> visit. Cypress מחיל intercepts בסדר הפוך — האחרון גובר, לכן הוא ילכוד את הבקשה לפני catch-all</li>
+      <li><strong>modifyTitle(responseBody)</strong> — פונקציה רקורסיבית שעוברת על כל ה-JSON ומשנה כל שדה title תואם, ללא תלות במבנה (מערכים, אובייקטים מקוננים)</li>
+      <li><strong>req.reply()</strong> — מחזיר תגובה מותאמת לדפדפן, ללא בקשה אמיתית לשרת</li>
+      <li><strong>cy.wait + .its('response.body.title').should('eq')</strong> — אימות שהכותרת בתגובה היא המעודכנת</li>
+    </ol>
+
+    <div class="note">
+      <strong>הכלל הקריטי: visit() לפני cy.intercept() הספציפי</strong><br>
+      Cypress מחיל intercepts בסדר רישום הפוך. <code>mockGovPages()</code> רושם catch-all <code>/he/**</code>.
+      אם <code>@primeMinistersOffice</code> יירשם לפני visit(), ה-catch-all יגבר עליו.
+      <strong>תמיד: visit() קודם → ואחר-כך intercept ספציפי.</strong>
+    </div>
+
+    <div class="note">
+      <strong>למה פונקציה רקורסיבית?</strong>
+      JSON מהשרת הוא nested — אובייקטים בתוך מערכים. שינוי ישיר של <code>body.title</code> לא ישנה title ב-<code>body.department.title</code> וכו'. הפונקציה עוברת על <em>כל</em> הענפים ומשנה בכל מקום שהיא מוצאת title תואם.
+    </div>
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="card" id="q5">
+  <div class="card-header slate">
+    <div class="num">5</div>
+    <div><h2>שאלה 5 — my.gov | ארגון test cases לכל הטאבים</h2><div class="sub">MyGovPage POM + nested describe + 19 טסטים</div></div>
+  </div>
+  <div class="card-body">
+    <p>
+      הטסטים מאורגנים ב-<strong>nested describe</strong>: describe חיצוני לכל עמוד my.gov,
+      ובתוכו describe נפרד לכל אחד מ-5 הטאבים + Navigation Bar.
+      כך דוח Cypress מציג תוצאות מסודרות לפי טאב.
+    </p>
+
+    <div class="file-badge">cypress/e2e/myGovMenuTabs.cy.js</div>
+    <pre><code><span class="kw">const</span> <span class="cls">MyGovPage</span> = <span class="fn">require</span>(<span class="str">'../pages/MyGovPage'</span>)
+
+<span class="fn">describe</span>(<span class="str">'my.gov.il - Personal Area - All Menu Tabs'</span>, () => {
+  <span class="kw">let</span> page
+
+  <span class="cmt">// beforeEach חיצוני: טוען fixture + מאתחל + ביקור לפני כל it</span>
+  <span class="fn">beforeEach</span>(() => {
+    cy.<span class="fn">fixture</span>(<span class="str">'my-gov-tabs'</span>).<span class="fn">as</span>(<span class="str">'tabs'</span>)
+    page = <span class="kw">new</span> <span class="cls">MyGovPage</span>()
+    page.<span class="fn">visit</span>()
+  })
+
+  <span class="fn">describe</span>(<span class="str">'Navigation Bar'</span>, () => {
+    <span class="fn">it</span>(<span class="str">'should display the navigation menu'</span>, () => { page.<span class="fn">verifyNavVisible</span>() })
+    <span class="fn">it</span>(<span class="str">'should highlight the currently active tab'</span>, () => { page.<span class="fn">verifyActiveTabExists</span>() })
+  })
+
+  <span class="fn">describe</span>(<span class="str">'Tab: תשלומים'</span>, () => {
+    <span class="kw">const</span> tabLabel = <span class="str">'תשלומים'</span>
+    <span class="fn">beforeEach</span>(() => page.<span class="fn">clickTab</span>(tabLabel))  <span class="cmt">// ניווט לטאב לפני כל it</span>
+
+    <span class="fn">it</span>(<span class="str">'should navigate to the payments section'</span>, <span class="kw">function</span>() {
+      <span class="kw">const</span> { urlSegment } = <span class="kw">this</span>.tabs.<span class="fn">find</span>((t) => t.label === tabLabel)
+      page.<span class="fn">verifyUrlIncludes</span>(urlSegment)   <span class="cmt">// 'payments'</span>
+    })
+    <span class="fn">it</span>(<span class="str">'should display a list of payments or an empty state'</span>, () => {
+      cy.<span class="fn">get</span>(<span class="str">'[class*="payment"], [class*="empty"]'</span>).<span class="fn">should</span>(<span class="str">'exist'</span>)
+    })
+    <span class="fn">it</span>(<span class="str">'should show payment details when clicking a payment item'</span>, () => {
+      cy.<span class="fn">get</span>(<span class="str">'[class*="payment-item"]'</span>).<span class="fn">first</span>().<span class="fn">click</span>()
+      cy.<span class="fn">get</span>(<span class="str">'[class*="payment-detail"], [class*="modal"]'</span>).<span class="fn">should</span>(<span class="str">'be.visible'</span>)
+    })
+    <span class="fn">it</span>(<span class="str">'should display the total amount for each payment'</span>, () => {
+      cy.<span class="fn">get</span>(<span class="str">'[class*="payment-item"]'</span>).<span class="fn">first</span>().<span class="fn">within</span>(() => {
+        cy.<span class="fn">get</span>(<span class="str">'[class*="amount"]'</span>).<span class="fn">should</span>(<span class="str">'exist'</span>)
+      })
+    })
+  })
+
+  <span class="cmt">// אותו דפוס לפניות, מסמכים, הגדרות, שירותים...</span>
+})</code></pre>
+
+    <h3>19 הטסטים — פירוט לפי טאב</h3>
+    <table>
+      <tr><th>Describe</th><th>#</th><th>מה נבדק</th></tr>
+      <tr><td rowspan="2"><strong>Navigation Bar</strong></td><td>1</td><td>סרגל ניווט גלוי</td></tr>
+      <tr><td>2</td><td>קיים טאב פעיל מסומן</td></tr>
+      <tr><td rowspan="4"><strong>תשלומים</strong></td><td>3</td><td>URL מכיל "payments"</td></tr>
+      <tr><td>4</td><td>רשימת תשלומים / empty state</td></tr>
+      <tr><td>5</td><td>לחיצה על פריט מציגה modal פרטים</td></tr>
+      <tr><td>6</td><td>כל פריט מציג סכום (.amount)</td></tr>
+      <tr><td rowspan="3"><strong>פניות</strong></td><td>7</td><td>URL מכיל "applications"</td></tr>
+      <tr><td>8</td><td>רשימת פניות / empty state</td></tr>
+      <tr><td>9</td><td>כל פריט מציג סטטוס (.status)</td></tr>
+      <tr><td rowspan="3"><strong>מסמכים</strong></td><td>10</td><td>URL מכיל "documents"</td></tr>
+      <tr><td>11</td><td>רשימת מסמכים / empty state</td></tr>
+      <tr><td>12</td><td>קישור הורדה קיים (a[download])</td></tr>
+      <tr><td rowspan="4"><strong>הגדרות</strong></td><td>13</td><td>URL מכיל "settings"</td></tr>
+      <tr><td>14</td><td>פרטי משתמש גלויים (.profile)</td></tr>
+      <tr><td>15</td><td>checkbox / toggle קיים</td></tr>
+      <tr><td>16</td><td>כפתור "שמור" + הודעת הצלחה</td></tr>
+      <tr><td rowspan="3"><strong>שירותים</strong></td><td>17</td><td>URL מכיל "services"</td></tr>
+      <tr><td>18</td><td>רשימת שירותים / empty state</td></tr>
+      <tr><td>19</td><td>כפתור "הסר" קיים בשירות</td></tr>
+    </table>
+
+    <h3>היגיון ה-beforeEach המקונן</h3>
+    <table>
+      <tr><th>רמה</th><th>מה רץ</th><th>מטרה</th></tr>
+      <tr><td>beforeEach חיצוני</td><td>fixture.as('tabs') + new MyGovPage() + page.visit()</td><td>איפוס מלא לפני כל טסט — כל it מתחיל מאפס</td></tr>
+      <tr><td>beforeEach בתוך כל describe</td><td>page.clickTab(tabLabel)</td><td>ניווט לטאב הספציפי לפני כל it בתוך הטאב</td></tr>
+    </table>
+
+    <div class="note">
+      <strong>SSO ממשלתי — מגבלה ידועה:</strong>
+      my.gov.il מחייב כניסה דרך eID. בסביבה עם גישה רשמית, יש להשתמש ב-<code>cy.session()</code>
+      עם משתמש בדיקה ייעודי ו-<code>cypress.env.json</code> לאחסון credentials.
+      בפרויקט זה הבדיקות רצות מול mock מקומי.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     LIMITATIONS
+═══════════════════════════════════════════════════════ -->
+<div class="card" id="limits">
+  <div class="card-header orange">
+    <div class="num">⚠</div>
+    <div><h2>מגבלות ותיעוד שגיאות</h2><div class="sub">Cloudflare + SSO — ממצאי QA רשמיים</div></div>
+  </div>
+  <div class="card-body">
+    <p>
+      כשלון בגלל חסימת תשתית — ולא בגלל באג בקוד הנבדק — הוא <strong>ממצא QA לגיטימי</strong>.
+      חלק מתפקיד בודק האוטומציה הוא לתעד את החסימות ולהגדיר דרישות להמשך.
+    </p>
+
+    <h3>gov.il — Cloudflare Bot Protection</h3>
+    <pre><code><span class="cmt">// שגיאה אופיינית בהרצה מול האתר האמיתי:</span>
+AssertionError: Timed out retrying after 4000ms:
+  Expected to find element: <span class="str">'.search-btn'</span>, but never found it.
+
+  Because this error occurred during a <span class="str">`before each`</span> hook we are skipping
+  all of the remaining tests in this suite.
+
+<span class="cmt">// קונסול הדפדפן:</span>
+GET https://www.gov.il/   →   <span class="num">403</span> Forbidden  (cf-ray: ...)</code></pre>
+
+    <h3>my.gov.il — SSO ממשלתי (eID)</h3>
+    <pre><code><span class="cmt">// שגיאה אופיינית:</span>
+CypressError: cy.visit() failed trying to load: https://my.gov.il/
+
+The response we received from your web server was:
+  > <span class="num">302</span>: Found  →  https://login.gov.il/nidp/...
+
+<span class="cmt">// גם עם failOnStatusCode: false — הדף הוא מסך SSO, כל האסרציות נכשלות</span></code></pre>
+
+    <h3>הפתרון שאומץ — Mock מקומי</h3>
+    <p>
+      הפרויקט משתמש ב-<code>cy.intercept()</code> ועמודי HTML מקומיים שמדמים את כל הזרימות.
+      כך הסוויט רץ בצורה יציבה ומדגים לוגיקת בדיקה מלאה — סלקטורים, POM, fixtures.
+    </p>
+
+    <h3>דרישות לבדיקות E2E מלאות מול האתרים האמיתיים</h3>
+    <table>
+      <tr><th>דרישה</th><th>מספק</th><th>תיאור</th></tr>
+      <tr><td>Whitelist IP / User-Agent</td><td>INPA Ops / Cloudflare</td><td>הוספת IP שרת ה-CI לרשימה הלבנה של Cloudflare</td></tr>
+      <tr><td>חשבון בדיקה מאושר</td><td>צוות הזהות של INPA</td><td>משתמש עם SSO bypass לסביבת בדיקות בלבד</td></tr>
+      <tr><td>סביבת Staging</td><td>DevOps של INPA</td><td>העתק של הייצור ללא חסימות Cloudflare</td></tr>
+      <tr><td>cy.session() + env vars</td><td>צוות הבדיקות</td><td><code>cypress.env.json</code> לאחסון credentials + <code>cy.session()</code> לשמירת session בין טסטים</td></tr>
+    </table>
+  </div>
+</div>
+
+</div><!-- /container -->
 </body>
 </html>

@@ -139,7 +139,6 @@ Cypress.Commands.add('mockGovPages', () => {
   cy.intercept('GET', '**/cities**', { statusCode: 200, body: [{ id: 1, name: 'Jerusalem' }] }).as('cities')
   cy.intercept('GET', '**/categories**', { statusCode: 200, body: [{ id: 1, name: 'Documents' }] }).as('categories')
   cy.intercept('GET', '**/accessibilitytype**', { statusCode: 200, body: [{ id: 1, name: 'Online' }] }).as('accessibilitytype')
-  cy.intercept('GET', '**/he/service-search', { statusCode: 200, body: searchPageHtml }).as('serviceSearch')
   cy.intercept('GET', '**/he/**', { statusCode: 200, body: searchPageHtml }).as('govHome')
   cy.intercept('GET', '**/my-gov', { statusCode: 200, body: personalAreaHtml }).as('myGovLocal')
   cy.intercept('GET', 'https://my.gov.il', { statusCode: 200, body: personalAreaHtml }).as('myGovRoot')

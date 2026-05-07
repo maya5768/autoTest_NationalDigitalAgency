@@ -1,4 +1,3 @@
-import './commands'
 import './govMock'
 
 Cypress.on('window:before:load', (win) => {

@@ -13,7 +13,7 @@ describe('Intercept API Requests - Status Code Validation', () => {
     page.visit().triggerApiFetch(...paths)
 
     this.apiData.endpoints.forEach((e) => {
-      cy.wait(`@${e.path.slice(1)}`).its('response.statusCode').should('eq', this.apiData.expectedStatus)
+      cy.wait(`@${e.alias}`).its('response.statusCode').should('eq', this.apiData.expectedStatus)
     })
   })
 })
