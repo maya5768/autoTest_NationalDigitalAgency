@@ -1,6 +1,12 @@
+const GovHomePage = require('../pages/GovHomePage')
+
 describe('Intercept and Modify Response - Prime Ministers Office', () => {
   it('should change the "title" prop in the API response to "office משרד ראש הממשלה"', () => {
-    cy.mockGovPages()
+    const page = new GovHomePage()
+
+    // visit() must run first so mockGovPages intercepts are registered,
+    // then register @primeMinistersOffice last so it takes priority over the /he/** catch-all
+    page.visit()
 
     cy.intercept('GET', '**/prime_ministers_office**', (req) => {
       const responseBody = {
@@ -32,11 +38,7 @@ describe('Intercept and Modify Response - Prime Ministers Office', () => {
       })
     }).as('primeMinistersOffice')
 
-    cy.visit('/he/', { failOnStatusCode: false })
-
-    cy.window().then((win) => {
-      win.fetch('/he/departments/prime_ministers_office')
-    })
+    page.triggerApiFetch('/he/departments/prime_ministers_office')
 
     cy.wait('@primeMinistersOffice')
       .its('response.body.title')

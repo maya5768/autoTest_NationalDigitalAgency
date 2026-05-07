@@ -6,29 +6,33 @@
  * reliably while still covering the requested navigation and tab behavior.
  */
 
+const MyGovPage = require('../pages/MyGovPage')
+
 describe('my.gov.il - Personal Area - All Menu Tabs', () => {
+  let page
+
   beforeEach(() => {
-    cy.mockGovPages()
-    cy.visit('/my-gov', { failOnStatusCode: false })
+    page = new MyGovPage()
+    page.visit()
   })
 
   describe('Navigation Bar', () => {
     it('should display the side/top navigation menu after login', () => {
-      cy.get('nav, [role="navigation"], [class*="sidebar"], [class*="menu"]').should('be.visible')
+      page.verifyNavVisible()
     })
 
     it('should highlight the currently active tab', () => {
-      cy.get('[aria-selected="true"], [class*="active"], [class*="selected"]').should('exist')
+      page.verifyActiveTabExists()
     })
   })
 
   describe('Tab: תשלומים', () => {
     beforeEach(() => {
-      cy.contains('a, button', 'תשלומים').click()
+      page.clickTab('תשלומים')
     })
 
     it('should navigate to the payments section', () => {
-      cy.url().should('include', 'payments')
+      page.verifyUrlIncludes('payments')
     })
 
     it('should display a list of payments or an empty state message', () => {
@@ -49,11 +53,11 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
 
   describe('Tab: פניות', () => {
     beforeEach(() => {
-      cy.contains('a, button', 'פניות').click()
+      page.clickTab('פניות')
     })
 
     it('should navigate to the applications section', () => {
-      cy.url().should('include', 'applications')
+      page.verifyUrlIncludes('applications')
     })
 
     it('should display applications list or empty state', () => {
@@ -69,11 +73,11 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
 
   describe('Tab: מסמכים', () => {
     beforeEach(() => {
-      cy.contains('a, button', 'מסמכים').click()
+      page.clickTab('מסמכים')
     })
 
     it('should navigate to the documents section', () => {
-      cy.url().should('include', 'documents')
+      page.verifyUrlIncludes('documents')
     })
 
     it('should display documents list or empty state', () => {
@@ -89,11 +93,11 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
 
   describe('Tab: הגדרות', () => {
     beforeEach(() => {
-      cy.contains('a, button', 'הגדרות').click()
+      page.clickTab('הגדרות')
     })
 
     it('should navigate to the settings section', () => {
-      cy.url().should('include', 'settings')
+      page.verifyUrlIncludes('settings')
     })
 
     it('should display user profile information', () => {
@@ -112,11 +116,11 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
 
   describe('Tab: שירותים', () => {
     beforeEach(() => {
-      cy.contains('a, button', 'שירותים').click()
+      page.clickTab('שירותים')
     })
 
     it('should navigate to the services/favourites section', () => {
-      cy.url().should('include', 'services')
+      page.verifyUrlIncludes('services')
     })
 
     it('should display favourite services or empty state', () => {
