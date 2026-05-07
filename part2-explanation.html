@@ -195,7 +195,9 @@
 │   └── <span class="file">search.cy.js</span>              <span class="note-inline">← שאלה 2 – 5 טסטים לחיפוש</span><br>
 ├── <span class="folder">fixtures/</span>                         <span class="note-inline">← נתוני fixture ברירת מחדל של Cypress</span><br>
 ├── <span class="folder">pages/</span><br>
-│   └── <span class="file">SearchPage.js</span>             <span class="note-inline">← Page Object (OOP) לשאלה 2</span><br>
+│   ├── <span class="file">SearchPage.js</span>             <span class="note-inline">← Page Object לשאלה 2 (חיפוש)</span><br>
+│   ├── <span class="file">GovHomePage.js</span>            <span class="note-inline">← Page Object לשאלות 3 ו-4 (intercept)</span><br>
+│   └── <span class="file">MyGovPage.js</span>              <span class="note-inline">← Page Object לשאלה 5 (טאבי my.gov)</span><br>
 ├── <span class="folder">screenshots/</span>                      <span class="note-inline">← נוצר אוטומטית בהרצה (מוחרג מ-git)</span><br>
 └── <span class="folder">support/</span><br>
     ├── <span class="file">commands.js</span><br>
@@ -341,16 +343,33 @@ module.exports = SearchPage</code></pre>
         הטסט מיירט את שלושתן ומוודא שכל אחת מחזירה <code>200 OK</code>.
       </p>
 
+      <p>
+        הטסט משתמש ב-<strong>GovHomePage</strong> — Page Object שעוטף את הביקור בדף ואת הפעלת הבקשות.
+        כך לוגיקת ה-setup מרוכזת במקום אחד ולא חוזרת בכל טסט.
+      </p>
+
+      <div class="file-badge">cypress/pages/GovHomePage.js</div>
+      <pre><code><span class="keyword">class</span> <span class="highlight">GovHomePage</span> {
+  <span class="highlight">visit</span>() {
+    cy.mockGovPages()
+    cy.visit(<span class="string">'/he/'</span>, { failOnStatusCode: <span class="keyword">false</span> })
+    <span class="keyword">return this</span>
+  }
+
+  <span class="highlight">triggerApiFetch</span>(...endpoints) {
+    cy.window().then((win) => {
+      endpoints.forEach((ep) => win.fetch(ep))
+    })
+    <span class="keyword">return this</span>
+  }
+}</code></pre>
+
       <div class="file-badge">cypress/e2e/interceptStatusCode.cy.js</div>
-      <pre><code>cy.mockGovPages()
+      <pre><code><span class="keyword">const</span> <span class="highlight">GovHomePage</span> = require(<span class="string">'../pages/GovHomePage'</span>)
 
-cy.visit(<span class="string">'/he/'</span>, { failOnStatusCode: <span class="keyword">false</span> })
+<span class="keyword">const</span> page = <span class="keyword">new</span> <span class="highlight">GovHomePage</span>()
 
-cy.window().then((win) => {
-  win.fetch(<span class="string">'/cities'</span>)
-  win.fetch(<span class="string">'/categories'</span>)
-  win.fetch(<span class="string">'/accessibilitytype'</span>)
-})
+page.visit().triggerApiFetch(<span class="string">'/cities'</span>, <span class="string">'/categories'</span>, <span class="string">'/accessibilitytype'</span>)
 
 cy.wait(<span class="string">'@cities'</span>).its(<span class="string">'response.statusCode'</span>).should(<span class="string">'eq'</span>, <span class="highlight">200</span>)
 cy.wait(<span class="string">'@categories'</span>).its(<span class="string">'response.statusCode'</span>).should(<span class="string">'eq'</span>, <span class="highlight">200</span>)
@@ -358,13 +377,10 @@ cy.wait(<span class="string">'@accessibilitytype'</span>).its(<span class="strin
 
       <p><strong>הסבר השלבים:</strong></p>
       <ul>
-        <li><code>cy.mockGovPages()</code> — מגדיר את כל ה-intercepts והתגובות המקומיות הנדרשות להרצה יציבה</li>
-        <li><code>.as('alias')</code> — נותן שם לבקשה כדי שנוכל לחכות לה</li>
-        <li><code>cy.visit()</code> — טוען את עמוד ה-mock של gov.il</li>
-        <li><code>win.fetch()</code> — מפעיל את הבקשות שהטסט רוצה לבדוק, כך ש-<code>cy.intercept()</code> יוכל ללכוד אותן</li>
+        <li><code>page.visit()</code> — קורא ל-<code>cy.mockGovPages()</code> ו-<code>cy.visit()</code> דרך ה-POM</li>
+        <li><code>page.triggerApiFetch(...)</code> — מפעיל את הבקשות ב-<code>win.fetch()</code> דרך ה-POM</li>
         <li><code>cy.wait('@alias')</code> — עוצר את הטסט עד שהבקשה חוזרת</li>
-        <li><code>.its('response.statusCode')</code> — שולף את קוד הסטטוס מהתגובה</li>
-        <li><code>.should('eq', 200)</code> — מוודא שהסטטוס הוא 200</li>
+        <li><code>.its('response.statusCode').should('eq', 200)</code> — מוודא שהסטטוס הוא 200</li>
       </ul>
     </div>
   </div>
@@ -385,9 +401,20 @@ cy.wait(<span class="string">'@accessibilitytype'</span>).its(<span class="strin
         ולשנות את ה-title ל-<code>"office משרד ראש הממשלה"</code>.
       </p>
 
-      <div class="file-badge">cypress/e2e/modifyResponse.cy.js</div>
-      <pre><code>cy.mockGovPages()
+      <p>
+        הטסט משתמש ב-<strong>GovHomePage</strong> לניהול ה-visit וה-fetch.
+        לוגיקת ה-intercept עצמה נשארת בתוך הטסט — היא ספציפית לטסט הזה ולא שייכת ל-POM.
+      </p>
 
+      <div class="file-badge">cypress/e2e/modifyResponse.cy.js</div>
+      <pre><code><span class="keyword">const</span> <span class="highlight">GovHomePage</span> = require(<span class="string">'../pages/GovHomePage'</span>)
+
+<span class="keyword">const</span> page = <span class="keyword">new</span> <span class="highlight">GovHomePage</span>()
+
+<span class="comment">// 1. visit() רושם את mockGovPages intercepts (כולל catch-all על /he/**)</span>
+page.visit()
+
+<span class="comment">// 2. רושם את @primeMinistersOffice אחרי mockGovPages — כך הוא גובר עליו</span>
 cy.intercept(<span class="string">'GET'</span>, <span class="string">'**/prime_ministers_office**'</span>, (req) => {
   <span class="keyword">const</span> responseBody = {
     title: <span class="string">'משרד ראש הממשלה'</span>,
@@ -402,22 +429,18 @@ cy.intercept(<span class="string">'GET'</span>, <span class="string">'**/prime_m
       <span class="keyword">if</span> (node.title === <span class="string">'משרד ראש הממשלה'</span>) {
         node.title = <span class="string">'office משרד ראש הממשלה'</span>
       }
-
-      Object.values(node).forEach((value) => {
-        <span class="keyword">if</span> (<span class="keyword">typeof</span> value === <span class="string">'object'</span>) <span class="highlight">modifyTitle</span>(value)
+      Object.values(node).forEach((v) => {
+        <span class="keyword">if</span> (<span class="keyword">typeof</span> v === <span class="string">'object'</span>) <span class="highlight">modifyTitle</span>(v)
       })
     }
   }
 
   <span class="highlight">modifyTitle</span>(responseBody)
-
   req.reply({ statusCode: <span class="highlight">200</span>, body: responseBody })
 }).as(<span class="string">'primeMinistersOffice'</span>)
 
-cy.visit(<span class="string">'/he/'</span>, { failOnStatusCode: <span class="keyword">false</span> })
-cy.window().then((win) => {
-  win.fetch(<span class="string">'/he/departments/prime_ministers_office'</span>)
-})
+<span class="comment">// 3. מפעיל את הבקשה אחרי רישום ה-intercept</span>
+page.triggerApiFetch(<span class="string">'/he/departments/prime_ministers_office'</span>)
 
 cy.wait(<span class="string">'@primeMinistersOffice'</span>)
   .its(<span class="string">'response.body.title'</span>)
@@ -431,9 +454,11 @@ cy.wait(<span class="string">'@primeMinistersOffice'</span>)
       </p>
 
       <div class="note">
-        <strong>חשוב:</strong> הגדרת ה-intercept חייבת לבוא <em>לפני</em> <code>cy.visit()</code>,
-        אחרת הבקשה תצא לפני שהמלכודת פעילה.
-        במימוש הנוכחי משתמשים ב-<code>req.reply()</code> כדי להחזיר תגובת mock שה-title שלה שונה בזמן הבדיקה.
+        <strong>סדר רישום intercepts — חשוב:</strong>
+        ב-Cypress, ה-intercept האחרון שנרשם מנצח על בקשות תואמות.
+        <code>cy.mockGovPages()</code> רושם catch-all על <code>/he/**</code> —
+        לכן <code>@primeMinistersOffice</code> חייב להירשם <em>אחריו</em> (כלומר אחרי <code>page.visit()</code>)
+        כדי לתפוס את הבקשה ראשון.
       </div>
     </div>
   </div>
@@ -453,23 +478,40 @@ cy.wait(<span class="string">'@primeMinistersOffice'</span>)
         כך הדוח של Cypress מציג תוצאות מסודרות לפי טאב.
       </p>
 
-      <pre><code><span class="highlight">describe</span>(<span class="string">'my.gov.il - Personal Area'</span>, () => {
+      <p>
+        הטסט משתמש ב-<strong>MyGovPage</strong> — Page Object שעוטף את הביקור בדף, ניווט בין טאבים, ואסרציות בסיסיות.
+        סלקטורים ספציפיים לתוכן (פריטי תשלום, מסמכים וכו') נשארים בטסט עצמו — הם assertion-specific ולא שייכים ל-POM.
+      </p>
 
-  beforeEach(() => {
-    cy.mockGovPages()
-    cy.visit(<span class="string">'/my-gov'</span>, { failOnStatusCode: <span class="keyword">false</span> })
-  })
+      <div class="file-badge">cypress/pages/MyGovPage.js</div>
+      <pre><code><span class="keyword">class</span> <span class="highlight">MyGovPage</span> {
+  <span class="keyword">get</span> <span class="highlight">nav</span>()       { <span class="keyword">return</span> cy.get(<span class="string">'nav, [role="navigation"], [class*="menu"]'</span>) }
+  <span class="keyword">get</span> <span class="highlight">activeTab</span>() { <span class="keyword">return</span> cy.get(<span class="string">'[aria-selected="true"], [class*="active"]'</span>) }
+
+  <span class="highlight">visit</span>()            { cy.mockGovPages(); cy.visit(<span class="string">'/my-gov'</span>); <span class="keyword">return this</span> }
+  <span class="highlight">clickTab</span>(label)   { cy.contains(<span class="string">'a, button'</span>, label).click(); <span class="keyword">return this</span> }
+  <span class="highlight">verifyNavVisible</span>() { <span class="keyword">this</span>.nav.should(<span class="string">'be.visible'</span>); <span class="keyword">return this</span> }
+  <span class="highlight">verifyUrlIncludes</span>(segment) { cy.url().should(<span class="string">'include'</span>, segment); <span class="keyword">return this</span> }
+}</code></pre>
+
+      <div class="file-badge">cypress/e2e/myGovMenuTabs.cy.js</div>
+      <pre><code><span class="keyword">const</span> <span class="highlight">MyGovPage</span> = require(<span class="string">'../pages/MyGovPage'</span>)
+
+<span class="highlight">describe</span>(<span class="string">'my.gov.il - Personal Area'</span>, () => {
+  <span class="keyword">let</span> page
+
+  beforeEach(() => { page = <span class="keyword">new</span> <span class="highlight">MyGovPage</span>(); page.visit() })
 
   <span class="highlight">describe</span>(<span class="string">'Navigation Bar'</span>, () => {
-    it(<span class="string">'should display the navigation menu'</span>, ...)
-    it(<span class="string">'should highlight the active tab'</span>, ...)
+    it(<span class="string">'should display the navigation menu'</span>, () => page.verifyNavVisible())
+    it(<span class="string">'should highlight the active tab'</span>, () => page.verifyActiveTabExists())
   })
 
   <span class="highlight">describe</span>(<span class="string">'Tab: תשלומים'</span>, () => {
-    beforeEach(() => { cy.contains(<span class="string">'תשלומים'</span>).click() })
-    it(<span class="string">'should navigate to payments section'</span>, ...)
-    it(<span class="string">'should display payments list or empty state'</span>, ...)
-    it(<span class="string">'should show payment details on click'</span>, ...)
+    beforeEach(() => page.clickTab(<span class="string">'תשלומים'</span>))
+    it(<span class="string">'should navigate to payments'</span>, () => page.verifyUrlIncludes(<span class="string">'payments'</span>))
+    it(<span class="string">'should display payments list'</span>, () => cy.get(<span class="string">'[class*="payment"]'</span>).should(<span class="string">'exist'</span>))
+    ...
   })
 
   <span class="highlight">describe</span>(<span class="string">'Tab: פניות'</span>, () => { ... })
@@ -480,9 +522,10 @@ cy.wait(<span class="string">'@primeMinistersOffice'</span>)
 
       <p><strong>עקרונות הארגון:</strong></p>
       <ul>
-        <li><strong>beforeEach()</strong> חיצוני — טוען מחדש את עמוד ה-mock לפני כל טסט כדי לשמור על מצב נקי</li>
-        <li><strong>beforeEach()</strong> בכל describe של טאב — ניווט לטאב לפני כל טסט בו</li>
-        <li>כל טאב בודק: ניווט (URL), תצוגה (אלמנטים קיימים), פעולות (לחיצה, עריכה)</li>
+        <li><strong>MyGovPage</strong> — מרכז את כל הניווט והסלקטורים של העמוד במקום אחד</li>
+        <li><strong>beforeEach()</strong> חיצוני — <code>page.visit()</code> טוען מחדש את עמוד ה-mock לפני כל טסט</li>
+        <li><strong>beforeEach()</strong> בכל describe של טאב — <code>page.clickTab()</code> מנווט לטאב</li>
+        <li>כל טאב בודק: ניווט (URL), תצוגה (אלמנטים), פעולות (לחיצה, עריכה)</li>
         <li>הטאבים נבדקים בעברית: תשלומים, פניות, מסמכים, הגדרות ושירותים</li>
       </ul>
 
