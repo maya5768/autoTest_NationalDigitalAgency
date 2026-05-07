@@ -39,16 +39,46 @@ Three tests run after the response:
 
 For a detailed explanation of all solutions, open [part2-explanation.html](part2-explanation.html) in your browser.
 
+### Project structure
+
+```
+cypress/
+├── e2e/
+│   ├── interceptStatusCode.cy.js   ← Q3 – status 200
+│   ├── modifyResponse.cy.js        ← Q4 – modify title
+│   ├── myGovMenuTabs.cy.js         ← Q5 – my.gov tabs
+│   └── search.cy.js                ← Q2 – 5 search tests
+├── pages/                          ← Page Object Model (OOP)
+│   ├── SearchPage.js               ← Q2 search component
+│   ├── GovHomePage.js              ← Q3 & Q4 intercept tests
+│   └── MyGovPage.js                ← Q5 my.gov tabs
+└── support/
+    ├── commands.js
+    ├── e2e.js
+    └── govMock.js                  ← local mock (Cloudflare bypass)
+```
+
+All four spec files use the Page Object pattern. `GovHomePage` and `MyGovPage`
+were added in a refactor after the initial implementation.
+
+**Note on `modifyResponse.cy.js`:** `page.visit()` must be called before
+registering the `@primeMinistersOffice` intercept. Cypress matches intercepts
+in reverse registration order, so the specific intercept must be registered
+*after* the `/he/**` catch-all in `mockGovPages()` to take priority.
+
 ## Running the tests
 
 ```bash
-npm run cy:run
+npm run cy:run        # headless
+npm run cy:open       # interactive UI
 ```
 
-If Cypress fails with `bad option: --smoke-test`, run this first in PowerShell:
+If Cypress fails with `bad option: --smoke-test`, the binary cache is corrupted
+(often caused by Windows Defender). Fix with:
 
 ```powershell
-Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue
+rmdir /s /q "%LOCALAPPDATA%\Cypress\Cache\13.17.0"
+npx cypress install --force
 ```
 
 ### Expected output — all tests passing
