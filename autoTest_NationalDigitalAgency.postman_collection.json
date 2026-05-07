@@ -1,0 +1,137 @@
+{
+  "info": {
+    "_postman_id": "0502cad8-f91f-4734-83d7-0b34c58b525d",
+    "name": "autoTest_NationalDigitalAgency",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12368365"
+  },
+  "item": [
+    {
+      "name": "GET gov.il - Status & Title Validation",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "",
+              "// Test 1: Status code is 200",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test 2: Title is in English",
+              "pm.test(\"Title is in English\", function () {",
+              "    var responseText = pm.response.text();",
+              "    var titleMatch = responseText.match(/<title>([\\s\\S]*?)<\\/title>/i);",
+              "    pm.expect(titleMatch).to.not.be.null;",
+              "    var title = titleMatch[1];",
+              "    // Check that the title contains only English (ASCII) characters",
+              "    pm.expect(title).to.match(/^[\\x00-\\x7F]*$/);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://www.gov.il/en",
+          "protocol": "https",
+          "host": [
+            "www",
+            "gov",
+            "il"
+          ],
+          "path": [
+            "en"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET SuggestExt - Status, Results Array & Not Empty",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response contains Results field that is an array\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"Results\");",
+              "    pm.expect(jsonData.Results).to.be.an(\"array\");",
+              "});",
+              "",
+              "pm.test(\"Results array is not empty\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.Results).to.have.length.above(0);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Referer",
+            "value": "https://www.gov.il/en"
+          },
+          {
+            "key": "Origin",
+            "value": "https://www.gov.il"
+          }
+        ],
+        "url": {
+          "raw": "https://searchgov.gov.il/govil/SuggestExt/?culture=en&query=passport",
+          "protocol": "https",
+          "host": [
+            "searchgov",
+            "gov",
+            "il"
+          ],
+          "path": [
+            "govil",
+            "SuggestExt",
+            ""
+          ],
+          "query": [
+            {
+              "key": "culture",
+              "value": "en"
+            },
+            {
+              "key": "query",
+              "value": "passport"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

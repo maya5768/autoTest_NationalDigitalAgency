@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part III – General Questions | הסבר מפורט למתחילים</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f6f9;
+      color: #1e293b;
+      line-height: 1.8;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0f4c81, #1a73e8);
+      color: white;
+      padding: 40px 60px;
+    }
+    header h1 { font-size: 2rem; margin-bottom: 8px; }
+    header p  { font-size: 1rem; opacity: 0.85; }
+
+    .container {
+      max-width: 980px;
+      margin: 40px auto;
+      padding: 0 24px 80px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 20px 28px;
+      background: #1a73e8;
+      color: white;
+    }
+    .card-header .num {
+      background: white;
+      color: #1a73e8;
+      font-weight: 700;
+      font-size: 1.1rem;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .card-header h2 { font-size: 1.15rem; }
+
+    .card-body { padding: 28px; }
+    .card-body p  { margin-bottom: 14px; }
+    .card-body ul, .card-body ol { padding-right: 22px; margin-bottom: 14px; }
+    .card-body li { margin-bottom: 8px; }
+
+    .sub-section {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    .sub-section-header {
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #0f4c81;
+    }
+    .sub-section-body { padding: 18px; }
+    .sub-section-body p  { margin-bottom: 10px; }
+    .sub-section-body ul { padding-right: 20px; }
+
+    .label {
+      display: inline-block;
+      background: #e8f0fe;
+      color: #1a73e8;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 20px;
+      margin-left: 6px;
+      margin-bottom: 12px;
+    }
+    .label-green  { background:#dcfce7; color:#166534; }
+    .label-orange { background:#fff7ed; color:#9a3412; }
+    .label-purple { background:#f3e8ff; color:#6b21a8; }
+
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 20px 24px;
+      font-size: 0.88rem;
+      overflow-x: auto;
+      margin: 14px 0;
+      direction: ltr;
+      text-align: left;
+    }
+    code { font-family: 'Consolas', 'Courier New', monospace; }
+    .hl  { color: #93c5fd; }
+    .str { color: #86efac; }
+    .cmt { color: #64748b; font-style: italic; }
+    .kw  { color: #f9a8d4; }
+    .nm  { color: #fcd34d; }
+
+    .note {
+      background: #fffbeb;
+      border-right: 4px solid #f59e0b;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 0.92rem;
+    }
+    .concept-box {
+      background: #f0f9ff;
+      border-right: 4px solid #0ea5e9;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 0.92rem;
+    }
+    .success-box {
+      background: #f0fdf4;
+      border-right: 4px solid #22c55e;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 0.92rem;
+    }
+    .warning-box {
+      background: #fff1f2;
+      border-right: 4px solid #f43f5e;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 0.92rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #f1f5f9;
+      padding: 10px 14px;
+      text-align: right;
+      font-weight: 600;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+
+    .diagram {
+      background: #1e293b;
+      color: #94a3b8;
+      border-radius: 8px;
+      padding: 20px 24px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      direction: ltr;
+      text-align: left;
+      line-height: 2;
+      margin: 16px 0;
+    }
+    .diagram .arrow   { color: #fbbf24; }
+    .diagram .ok      { color: #86efac; }
+    .diagram .bad     { color: #f87171; }
+    .diagram .neutral { color: #93c5fd; }
+    .diagram .dim     { color: #475569; }
+
+    .step-list { counter-reset: steps; padding: 0; list-style: none; }
+    .step-list li {
+      counter-increment: steps;
+      display: flex; gap: 12px;
+      margin-bottom: 14px; align-items: flex-start;
+    }
+    .step-list li::before {
+      content: counter(steps);
+      background: #1a73e8;
+      color: white; font-weight: 700; font-size: 0.8rem;
+      min-width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+
+    .analogy {
+      background: #faf5ff;
+      border: 1px dashed #a855f7;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 0.92rem;
+    }
+    .analogy strong { color: #7c3aed; }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .compare-col { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
+    .compare-col-header { padding: 10px 14px; font-weight: 700; font-size: 0.88rem; }
+    .compare-col-header.blue  { background:#dbeafe; color:#1e40af; }
+    .compare-col-header.green { background:#dcfce7; color:#166534; }
+    .compare-col-body { padding: 12px 14px; font-size: 0.88rem; }
+    .compare-col-body ul { padding-right: 16px; }
+    .compare-col-body li { margin-bottom: 6px; }
+    @media(max-width:640px){ .compare-grid { grid-template-columns:1fr; } }
+
+    .question-quote {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .trace-table { margin: 18px 0; border: 1px solid #dbeafe; border-radius: 10px; overflow: hidden; }
+    .trace-table table { margin: 0; }
+    .trace-table th { background: #dbeafe; color: #1e3a8a; text-align: center; }
+    .trace-table td { text-align: center; vertical-align: middle; }
+    .yes { color: #15803d; font-weight: 700; }
+    .no  { color: #b91c1c; font-weight: 700; }
+    .hint-update { background: #dcfce7; color: #166534; font-weight: 700; border-radius: 6px; padding: 2px 8px; display: inline-block; }
+    .hint-same   { background: #fee2e2; color: #991b1b; font-weight: 700; border-radius: 6px; padding: 2px 8px; display: inline-block; }
+    .answer-summary { background: #f0f9ff; border-left: 6px solid #0ea5e9; padding: 20px 24px; border-radius: 8px 0 0 8px; margin: 18px 0; font-size: 1rem; }
+    .answer-summary h3 { color: #0f172a; font-size: 1.1rem; margin-bottom: 8px; }
+    .final-answer { background: #dcfce7; border: 1px solid #86efac; border-radius: 12px; padding: 18px 22px; margin: 18px 0; font-size: 1.1rem; font-weight: 700; color: #166534; text-align: center; }
+    .flow-line { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 18px 0; }
+    .flow-step { background: #f8fafc; border: 1px solid #dbeafe; border-radius: 10px; padding: 12px; text-align: center; font-size: 0.88rem; min-height: 112px; }
+    .flow-step strong { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: #1a73e8; color: white; margin-bottom: 8px; }
+    @media (max-width: 760px) { .flow-line { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Part III | General Questions – הסבר מפורט למתחילים</h1>
+  <p>רקע טכני מעמיק לכל שאלה, כולל מושגי יסוד ב-JS ובדיקות אוטומציה</p>
+</header>
+
+<div class="container">
+
+<!-- ══════════ שאלה 1 ══════════ -->
+<div class="card">
+  <div class="card-header">
+    <div class="num">1</div>
+    <h2>סדר פעולות ב-Cypress – Asynchronous Command Queue</h2>
+  </div>
+  <div class="card-body">
+    <span class="label">Cypress Command Queue</span>
+
+    <div class="question-quote">
+      <code>const SearchInputBox = cy.get('.gLFyf');</code><br>
+      <code>cy.visit('https://www.google.com/');</code><br>
+      <code>SearchInputBox.first().type('Gov.il');</code>
+    </div>
+
+    <p>כדי לענות, צריך להבין כיצד Cypress מבצע פקודות בפועל.</p>
+
+    <div class="concept-box">
+      <strong>מושג מפתח: Cypress Command Queue (תור פקודות)</strong><br>
+      כל פקודת Cypress כמו <code>cy.get()</code>, <code>cy.visit()</code>, <code>cy.click()</code>
+      לא מתבצעת מיידית. היא מתווספת ל<strong>תור ביצוע</strong> ותרוץ רק כאשר
+      Cypress מוכן — לאחר שהדף נטען, אחרי שהאלמנט קיים.
+    </div>
+
+    <div class="diagram">
+<span class="neutral">שורה 1:</span> cy.get('.gLFyf')  <span class="arrow">→</span> <span class="bad">מוסיף לתור "חפש אלמנט"</span><br>
+<span class="neutral">            </span>  SearchInputBox = Chainer (לא תוצאה אמיתית!)<br>
+<br>
+<span class="neutral">שורה 2:</span> cy.visit(...)      <span class="arrow">→</span> <span class="ok">מוסיף לתור "טען דף"</span><br>
+<span class="neutral">שורה 3:</span> .first().type(...) <span class="arrow">→</span> <span class="ok">מוסיף לתור "הקלד"</span><br>
+<br>
+<span class="arrow">── ביצוע התור ─────────────────────────────</span><br>
+<span class="bad">❌  "חפש .gLFyf"  ← רץ לפני שהדף נטען! האלמנט לא קיים.</span><br>
+<span class="ok">✓   "טען דף"</span><br>
+<span class="ok">✓   "הקלד"</span>
+    </div>
+
+    <table>
+      <tr><th>גישה</th><th>דוגמה</th><th>מה קורה</th></tr>
+      <tr>
+        <td><strong>שמירה במשתנה לפני visit</strong></td>
+        <td><code>const el = cy.get('.x');<br>cy.visit(url);<br>el.click();</code></td>
+        <td>ה-get רץ לפני הדף — האלמנט לא קיים</td>
+      </tr>
+      <tr>
+        <td><strong>שרשרת ישירה</strong></td>
+        <td><code>cy.visit(url);<br>cy.get('.x').click();</code></td>
+        <td>visit מסתיים לפני get — תקין</td>
+      </tr>
+    </table>
+
+    <div class="success-box">
+      <strong>התשובה הנכונה היא: Malfunction in the order of operations — תקלה בסדר הפעולות.</strong><br><br>
+      הבעיה אינה בסלקטור, בערכים, או בתוכן הפקודות — כולן תקינות לחלוטין.
+      הבעיה היא ש-<code>cy.get('.gLFyf')</code> נרשם בתור הפקודות <strong>לפני</strong> <code>cy.visit()</code>.
+      כאשר Cypress מריץ את התור, הוא מנסה למצוא את האלמנט על דף שעוד לא נטען — ולכן הטסט נכשל.
+      הפתרון: תמיד לשים <code>cy.visit()</code> לפני <code>cy.get()</code>.
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ שאלה 2 – הסבר מעמיק ══════════ -->
+<div class="card">
+  <div class="card-header">
+    <div class="num">2</div>
+    <h2>driver.getPageSource() – הסבר מלא ומפורט למתחילים</h2>
+  </div>
+  <div class="card-body">
+    <span class="label">Selenium WebDriver</span>
+    <span class="label label-green">HTML &amp; DOM</span>
+    <span class="label label-orange">Server vs Browser</span>
+
+    <!-- 2.1 -->
+    <div class="sub-section">
+      <div class="sub-section-header">🔧 רקע: מה זה Selenium WebDriver?</div>
+      <div class="sub-section-body">
+        <p>
+          <strong>Selenium</strong> הוא כלי בדיקות אוטומציה לאינטרנט. הוא מאפשר לקוד שלנו
+          "לנהוג" בדפדפן — לפתוח דפים, ללחוץ על כפתורים, למלא טפסים — בדיוק כמו שמשתמש אמיתי.
+        </p>
+        <p>
+          <code>driver</code> הוא <strong>האובייקט המרכזי</strong> — הוא מייצג את הדפדפן שנפתח.
+          דרכו שולחים פקודות: "לך לדף", "מצא אלמנט", "לחץ", "קרא טקסט".
+        </p>
+        <div class="analogy">
+          <strong>דימוי:</strong> Selenium = נהג מונית אוטומטי.<br>
+          <code>driver</code> = שלט הרחוק שמפקד על המונית.<br>
+          כל פקודה שכותבים ב-driver היא הוראה שהדפדפן מבצע בפועל.
+        </div>
+        <p>
+          <strong>ההבדל בין Selenium ל-Cypress:</strong><br>
+          Cypress רץ <em>בתוך</em> הדפדפן ולא צריך <code>driver</code>.
+          Selenium רץ <em>מחוץ</em> לדפדפן ומתקשר איתו דרך פרוטוקול WebDriver.
+        </p>
+      </div>
+    </div>
+
+    <!-- 2.2 -->
+    <div class="sub-section">
+      <div class="sub-section-header">📄 מושג בסיס: מה זה HTML ומה זה DOM?</div>
+      <div class="sub-section-body">
+        <p>
+          <strong>HTML (HyperText Markup Language)</strong> הוא שפת הסימון שמגדירה את מבנה דף האינטרנט.
+          זהו קובץ טקסט פשוט עם תגיות (tags) כמו <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;button&gt;</code>.
+        </p>
+        <pre><code><span class="cmt">&lt;!-- דוגמה לקוד HTML --&gt;</span>
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;gov.il&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;ברוכים הבאים&lt;/h1&gt;
+    &lt;button id=<span class="str">"search-btn"</span>&gt;חיפוש&lt;/button&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+        <p>
+          <strong>DOM (Document Object Model)</strong> הוא הייצוג <em>בזיכרון הדפדפן</em> של אותו HTML.
+          כשהדפדפן קורא את ה-HTML, הוא בונה ממנו מבנה עצים (tree) בזיכרון — זה ה-DOM.
+          JavaScript יכול לשנות את ה-DOM לאחר הטעינה — מבלי לגעת בקובץ ה-HTML המקורי.
+        </p>
+        <div class="analogy">
+          <strong>דימוי:</strong><br>
+          HTML = תוכנית הבנייה של בית (על נייר).<br>
+          DOM = הבית עצמו לאחר הבנייה בזיכרון.<br>
+          JavaScript יכול לשפץ את הבית (DOM) מבלי לשנות את התוכנית המקורית (HTML).
+        </div>
+        <div class="concept-box">
+          <strong>חשוב:</strong> ה-DOM יכול להיות <em>שונה מאוד</em> מה-HTML המקורי!
+          JavaScript מוסיף, מסיר ומשנה אלמנטים ב-DOM לאחר שהדף נטען.
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.3 -->
+    <div class="sub-section">
+      <div class="sub-section-header">⚡ מושג בסיס: מה זה JavaScript ואיך הוא משנה את הדף?</div>
+      <div class="sub-section-body">
+        <p>
+          <strong>JavaScript (JS)</strong> היא שפת תכנות שרצה <em>בתוך הדפדפן</em>.
+          היא מאפשרת לדפים להיות דינמיים — לשנות תוכן, לשלוח בקשות לשרת, להציג ולהסתיר אלמנטים.
+        </p>
+        <pre><code><span class="cmt">// JavaScript שמוסיף אלמנט חדש ל-DOM</span>
+<span class="kw">const</span> newDiv = document.createElement(<span class="str">'div'</span>);
+newDiv.textContent = <span class="str">'תוכן שנוצר ב-JavaScript'</span>;
+document.body.appendChild(newDiv);
+
+<span class="cmt">// האלמנט קיים ב-DOM — אבל לא בקובץ ה-HTML המקורי!</span></code></pre>
+
+        <p>
+          אתרים מודרניים כמו React, Angular, Vue שולחים HTML כמעט ריק מהשרת,
+          וה-JavaScript בונה את כל הממשק בדפדפן.
+        </p>
+
+        <div class="compare-grid">
+          <div class="compare-col">
+            <div class="compare-col-header blue">מה השרת שולח (HTML גולמי)</div>
+            <div class="compare-col-body">
+              <ul>
+                <li>HTML בסיסי, כמעט ריק</li>
+                <li>קישורים לקבצי JavaScript</li>
+                <li>אין תוכן ויזואלי עדיין</li>
+              </ul>
+            </div>
+          </div>
+          <div class="compare-col">
+            <div class="compare-col-header green">מה המשתמש רואה (DOM אחרי JS)</div>
+            <div class="compare-col-body">
+              <ul>
+                <li>כפתורים, תמונות, טקסטים</li>
+                <li>כל הממשק — נבנה ע"י JS</li>
+                <li>שונה לחלוטין מה-HTML שהגיע</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.4 -->
+    <div class="sub-section">
+      <div class="sub-section-header">🔍 מה עושה driver.getPageSource() בדיוק?</div>
+      <div class="sub-section-body">
+        <p>
+          <code>driver.getPageSource()</code> מחזירה <strong>מחרוזת טקסט (String)</strong>
+          שמכילה את קוד ה-HTML של הדף — כפי שהדפדפן רואה אותו ברגע הקריאה.
+        </p>
+        <pre><code><span class="cmt">// Selenium – Java</span>
+String source = driver.getPageSource();
+System.out.println(source);
+
+<span class="cmt">// הפלט: &lt;html&gt;&lt;head&gt;...&lt;/head&gt;&lt;body&gt;...&lt;/body&gt;&lt;/html&gt;</span></code></pre>
+
+        <div class="warning-box">
+          <strong>נקודה עדינה:</strong> האם getPageSource מחזיר את ה-HTML שהגיע מהשרת
+          או את ה-DOM אחרי JS?<br><br>
+          התשובה תלויה בדפדפן — בדרך כלל מחזיר את ה-HTML <em>כפי שהוא בדפדפן ברגע הקריאה</em>,
+          אחרי שה-JS רץ חלקית. הוא שונה מ-<code>driver.findElement()</code> שמחפש ב-DOM החי.
+        </div>
+
+        <div class="diagram">
+<span class="neutral">שרת</span>   <span class="arrow">──── שולח HTML ────►</span>  <span class="neutral">דפדפן</span><br>
+<span class="dim">          (קוד מקור)</span>              <span class="dim">(מפרש)</span><br>
+<br>
+<span class="neutral">דפדפן</span>  <span class="arrow">──── JS רץ ─────►</span>  <span class="neutral">DOM מעודכן</span><br>
+<span class="dim">          (JavaScript)</span>           <span class="dim">(ממשק ויזואלי)</span><br>
+<br>
+<span class="ok">getPageSource()</span>  <span class="arrow">◄──</span>  <span class="ok">HTML + שינויים חלקיים</span><br>
+<span class="ok">findElement()   </span>  <span class="arrow">◄──</span>  <span class="ok">DOM החי — מה שמוצג למשתמש</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.5 -->
+    <div class="sub-section">
+      <div class="sub-section-header">🗂 מה יש ב-Page Source שאי אפשר למצוא ב-DOM?</div>
+      <div class="sub-section-body">
+        <p>ישנם מקרים שהמידע נמצא ב-HTML אבל <em>לא</em> גלוי כאלמנט ב-DOM:</p>
+
+        <p><strong>1. תגיות &lt;script&gt; עם JSON מוטמע</strong></p>
+        <pre><code><span class="cmt">&lt;!-- מידע שהשרת מכניס ישירות ל-HTML --&gt;</span>
+&lt;<span class="hl">script</span> type=<span class="str">"application/json"</span> id=<span class="str">"initial-data"</span>&gt;
+  {
+    <span class="str">"user"</span>: { <span class="str">"id"</span>: <span class="nm">123</span>, <span class="str">"role"</span>: <span class="str">"admin"</span> },
+    <span class="str">"config"</span>: { <span class="str">"lang"</span>: <span class="str">"he"</span>, <span class="str">"version"</span>: <span class="str">"2.1"</span> }
+  }
+&lt;/<span class="hl">script</span>&gt;
+<span class="cmt">&lt;!-- לא גלוי למשתמש, לא אלמנט ב-DOM — רק getPageSource() יחשוף אותו --&gt;</span></code></pre>
+
+        <div class="concept-box">
+          <strong>מה זה JSON?</strong><br>
+          JSON (JavaScript Object Notation) הוא פורמט להעברת נתונים בין שרת לדפדפן.
+          נראה כמו מילון: <code>{"key": "value"}</code>. השרת משתמש בו להעביר מידע מובנה
+          (כמו פרטי משתמש, הגדרות, נתוני API).
+        </div>
+
+        <p><strong>2. Meta Tags — מידע על הדף</strong></p>
+        <pre><code>&lt;<span class="hl">head</span>&gt;
+  <span class="cmt">&lt;!-- תגיות meta לא גלויות למשתמש --&gt;</span>
+  &lt;<span class="hl">meta</span> charset=<span class="str">"UTF-8"</span>&gt;
+  &lt;<span class="hl">meta</span> name=<span class="str">"description"</span> content=<span class="str">"ממשלת ישראל"</span>&gt;
+  &lt;<span class="hl">meta</span> property=<span class="str">"og:title"</span> content=<span class="str">"gov.il"</span>&gt;
+  &lt;<span class="hl">meta</span> name=<span class="str">"csrf-token"</span> content=<span class="str">"a8f3k..."</span>&gt;
+&lt;/<span class="hl">head</span>&gt;</code></pre>
+
+        <div class="concept-box">
+          <strong>מה זה Meta Tag?</strong><br>
+          תגית <code>&lt;meta&gt;</code> מכילה מידע <em>על</em> הדף, לא מידע <em>שגלוי בדף</em>.
+          הדפדפן משתמש בה לצרכי:
+          <ul style="padding-right:18px; margin-top:8px;">
+            <li><strong>charset</strong> — קידוד תווים (חשוב לעברית)</li>
+            <li><strong>description</strong> — תיאור לגוגל (SEO)</li>
+            <li><strong>og:title</strong> — כותרת לשיתוף ברשתות חברתיות (Open Graph)</li>
+            <li><strong>csrf-token</strong> — טוקן אבטחה נגד התקפות CSRF</li>
+          </ul>
+          המשתמש לא רואה אותן בדף — רק בקוד המקור.
+        </div>
+
+        <p><strong>3. HTML Comments — הערות מוסתרות</strong></p>
+        <pre><code><span class="cmt">&lt;!-- BUILD: v2.3.1 | 2026-05-07 | env: production --&gt;</span>
+<span class="cmt">&lt;!-- DEBUG: this section loaded in 234ms --&gt;</span>
+<span class="cmt">&lt;!-- הערות אלה לא גלויות ב-DOM ולא למשתמש --&gt;</span></code></pre>
+      </div>
+    </div>
+
+    <!-- 2.6 -->
+    <div class="sub-section">
+      <div class="sub-section-header">🌐 Server-Side Rendering vs Client-Side Rendering</div>
+      <div class="sub-section-body">
+        <table>
+          <tr>
+            <th></th>
+            <th>Server-Side Rendering (SSR)</th>
+            <th>Client-Side Rendering (CSR)</th>
+          </tr>
+          <tr>
+            <td><strong>איך זה עובד</strong></td>
+            <td>השרת בונה HTML מלא ושולח לדפדפן</td>
+            <td>השרת שולח HTML ריק + JS; הדפדפן בונה הכל</td>
+          </tr>
+          <tr>
+            <td><strong>דוגמאות</strong></td>
+            <td>WordPress, PHP, אתרים ישנים</td>
+            <td>React, Angular, Vue</td>
+          </tr>
+          <tr>
+            <td><strong>getPageSource()</strong></td>
+            <td>מכיל את כל התוכן — שימושי לבדיקה</td>
+            <td>מכיל HTML כמעט ריק — לא שימושי לתוכן ויזואלי</td>
+          </tr>
+          <tr>
+            <td><strong>gov.il</strong></td>
+            <td colspan="2">משתמש ב-Angular (CSR) — רוב התוכן נבנה ע"י JavaScript בדפדפן</td>
+          </tr>
+        </table>
+
+        <div class="analogy">
+          <strong>דימוי לSSR vs CSR:</strong><br>
+          <strong>SSR</strong> = מסעדה שמגישה אוכל מוכן לגמרי — מה שמגיע לשולחן = מה שאוכלים.<br>
+          <strong>CSR</strong> = ערכת IKEA — מקבלים קופסה עם חלקים (HTML + JS),
+          ורק בבית מרכיבים לרהיט מוכן (DOM). לפני ההרכבה — הקופסה כמעט ריקה.
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.7 -->
+    <div class="sub-section">
+      <div class="sub-section-header">✅ מתי כן משתמשים ב-getPageSource()? – דוגמאות מעשיות</div>
+      <div class="sub-section-body">
+        <p><strong>מקרה 1 – אימות encoding (חשוב לעברית)</strong></p>
+        <pre><code>String source = driver.getPageSource();
+<span class="cmt">// בדיקה שה-charset מוגדר כ-UTF-8</span>
+Assert.assertTrue(source.contains(<span class="str">"charset=\"UTF-8\""</span>));</code></pre>
+
+        <p><strong>מקרה 2 – בדיקת JSON מוטמע</strong></p>
+        <pre><code>String source = driver.getPageSource();
+<span class="cmt">// בדיקה שה-config שהשרת שלח מכיל את הגרסה הנכונה</span>
+Assert.assertTrue(source.contains(<span class="str">"\"version\": \"2.1\""</span>));</code></pre>
+
+        <p><strong>מקרה 3 – בדיקת SEO meta tags</strong></p>
+        <pre><code>String source = driver.getPageSource();
+<span class="cmt">// בדיקה שדף הבית מכיל description לגוגל</span>
+Assert.assertTrue(source.contains(<span class="str">"meta name=\"description\""</span>));
+Assert.assertTrue(source.contains(<span class="str">"ממשלת ישראל"</span>));</code></pre>
+
+        <div class="success-box">
+          <strong>כלל אצבע:</strong> השתמש ב-<code>getPageSource()</code> כאשר המידע
+          <strong>לא גלוי</strong> בממשק, נמצא ב-<code>&lt;head&gt;</code>,
+          או מוטמע בתגיות <code>&lt;script&gt;</code>.
+          לכל שאר הבדיקות — השתמש ב-<code>driver.findElement()</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.8 -->
+    <div class="sub-section">
+      <div class="sub-section-header">❌ מתי לא כדאי להשתמש ב-getPageSource()?</div>
+      <div class="sub-section-body">
+        <table>
+          <tr><th>מטרה</th><th>הדרך הנכונה</th><th>למה לא getPageSource?</th></tr>
+          <tr>
+            <td>לחיצה על כפתור</td>
+            <td><code>driver.findElement(By.id("btn")).click()</code></td>
+            <td>מחרוזת טקסט — אי אפשר ללחוץ עליה</td>
+          </tr>
+          <tr>
+            <td>בדיקה שטקסט מסוים מוצג</td>
+            <td><code>element.getText()</code></td>
+            <td>חיפוש ב-String לא מאמת שהאלמנט גלוי</td>
+          </tr>
+          <tr>
+            <td>מציאת אלמנטים ויזואליים</td>
+            <td><code>By.cssSelector() / By.xpath()</code></td>
+            <td>getPageSource לא מאפשר סלקטורים — רק contains()</td>
+          </tr>
+        </table>
+
+        <div class="warning-box">
+          <strong>בעיה נפוצה של מתחילים:</strong> לנסות לבדוק תוכן ויזואלי עם
+          <code>getPageSource().contains()</code> — זה עלול לעבוד גם כשהאלמנט מוסתר (hidden)!
+          <code>findElement()</code> מדויק יותר כי הוא בודק את ה-DOM החי.
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.9 -->
+    <div class="sub-section">
+      <div class="sub-section-header">📊 סיכום: getPageSource() מול findElement()</div>
+      <div class="sub-section-body">
+        <table>
+          <tr><th></th><th>getPageSource()</th><th>findElement() / cy.get()</th></tr>
+          <tr>
+            <td><strong>מה מחזיר</strong></td>
+            <td>מחרוזת טקסט של ה-HTML</td>
+            <td>אובייקט אלמנט ב-DOM</td>
+          </tr>
+          <tr>
+            <td><strong>גישה</strong></td>
+            <td>חיפוש טקסט (contains)</td>
+            <td>סלקטורים — CSS, XPath, ID</td>
+          </tr>
+          <tr>
+            <td><strong>מכסה</strong></td>
+            <td>head, script, comments, meta</td>
+            <td>אלמנטים גלויים ב-body</td>
+          </tr>
+          <tr>
+            <td><strong>מתאים ל</strong></td>
+            <td>meta tags, JSON מוטמע, CSRF tokens</td>
+            <td>לחיצות, קריאת טקסט, בדיקות ויזואליות</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="success-box">
+      <strong>התשובה הנכונה היא: To find elements within JS code embedded in HTML.</strong><br><br>
+      <code>getPageSource()</code> מחזירה את כל קוד ה-HTML של הדף, כולל תגיות <code>&lt;script&gt;</code>
+      שמכילות נתוני JSON מוטמעים — תוכן שלא גלוי כאלמנט ב-DOM ולא ניתן למצוא עם <code>findElement()</code>.<br><br>
+      שאר האפשרויות שגויות:
+      <ul style="margin-top:8px; padding-right:20px;">
+        <li>היא <strong>אינה</strong> מיותרת לחלוטין — יש לה שימושים ספציפיים</li>
+        <li>היא <strong>אינה</strong> הדרך החכמה למצוא אלמנטים ב-DOM — לזה משמש <code>findElement()</code></li>
+        <li>האפשרות על "התאמת קוד שרת למנוע הדפדפן" אינה מדויקת — זה לא השימוש הנכון של הפקודה</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ שאלה 3 ══════════ -->
+<div class="card">
+  <div class="card-header">
+    <div class="num">3</div>
+    <h2>ניתוח קוד Java – מה יודפס?</h2>
+  </div>
+  <div class="card-body">
+    <span class="label">לוגיקה ולולאות</span>
+
+    <div class="question-quote">
+      <code>int n1 = 55, n2 = 66, hint = 1;</code><br><br>
+      <code>for(int i = 1; i &lt;= n1; ++i)</code><br>
+      <code>{</code><br>
+      <code>&nbsp;&nbsp;if(n1 % i==0 &amp;&amp; n2 % i==0)</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;hint = i;</code><br>
+      <code>}</code><br>
+      <code>System.out.println("hint is: " + hint);</code>
+    </div>
+
+    <p>כדי לענות, צריך להבין שני מושגים: <strong>אופרטור ה-Modulo</strong> ו<strong>כיצד לעקוב אחרי לולאה</strong>.</p>
+
+    <div class="concept-box">
+      <strong>אופרטור % (Modulo) – שארית חלוקה</strong><br>
+      <code>a % b</code> מחזיר את השארית של חלוקת <code>a</code> ב-<code>b</code>.<br>
+      <strong>כאשר התוצאה היא 0 — b מחלק את a בדיוק ללא שארית.</strong><br><br>
+      דוגמאות:<br>
+      <code>10 % 5 = 0</code> &nbsp;→ 5 מחלק את 10 בדיוק<br>
+      <code>10 % 3 = 1</code> &nbsp;→ 3 לא מחלק את 10 בדיוק<br>
+      <code>55 % 11 = 0</code> → 11 מחלק את 55 בדיוק
+    </div>
+
+    <p><strong>מה הלולאה עושה בפועל?</strong></p>
+    <p>
+      הלולאה עוברת על כל מספר <code>i</code> מ-1 עד 55.
+      בכל איטרציה בודקת: <em>"האם <code>i</code> מחלק גם את n1 וגם את n2?"</em>
+      אם כן — שומרת את <code>i</code> ב-<code>hint</code>.
+      בסוף הלולאה, <code>hint</code> מכיל את הערך <strong>האחרון</strong> שעמד בתנאי.
+    </p>
+
+    <p><strong>הסבר ויזואלי של ה-if בתוך הלולאה:</strong></p>
+
+    <div class="flow-line">
+      <div class="flow-step"><strong>1</strong><br>הלולאה בוחרת ערך נוכחי של <code>i</code></div>
+      <div class="flow-step"><strong>2</strong><br>בודקים אם <code>55 % i == 0</code></div>
+      <div class="flow-step"><strong>3</strong><br>בודקים אם <code>66 % i == 0</code></div>
+      <div class="flow-step"><strong>4</strong><br>רק אם שני התנאים נכונים נכנסים ל-<code>if</code></div>
+      <div class="flow-step"><strong>5</strong><br><code>hint</code> מקבל את הערך של <code>i</code></div>
+    </div>
+
+    <div class="trace-table">
+      <table>
+        <tr>
+          <th>i</th>
+          <th>55 % i == 0?</th>
+          <th>66 % i == 0?</th>
+          <th>נכנסים ל-if?</th>
+          <th>מה קורה ל-hint?</th>
+        </tr>
+        <tr>
+          <td><code>1</code></td>
+          <td class="yes">כן</td><td class="yes">כן</td><td class="yes">כן</td>
+          <td><span class="hint-update">hint = 1</span></td>
+        </tr>
+        <tr>
+          <td><code>5</code></td>
+          <td class="yes">כן</td><td class="no">לא</td><td class="no">לא</td>
+          <td><span class="hint-same">נשאר 1</span></td>
+        </tr>
+        <tr>
+          <td><code>6</code></td>
+          <td class="no">לא</td><td class="yes">כן</td><td class="no">לא</td>
+          <td><span class="hint-same">נשאר 1</span></td>
+        </tr>
+        <tr>
+          <td><code>11</code></td>
+          <td class="yes">כן</td><td class="yes">כן</td><td class="yes">כן</td>
+          <td><span class="hint-update">hint = 11</span></td>
+        </tr>
+        <tr>
+          <td><code>55</code></td>
+          <td class="yes">כן</td><td class="no">לא</td><td class="no">לא</td>
+          <td><span class="hint-same">נשאר 11</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="concept-box">
+      <strong>כלל פשוט לזכור:</strong>
+      הסימן <code>&amp;&amp;</code> אומר "וגם". מספיק שאחד משני הצדדים לא נכון כדי שלא ניכנס ל-<code>if</code>.
+      נכנסים ל-<code>if</code> רק כאשר <code>i</code> מחלק גם את 55 וגם את 66 ללא שארית.
+    </div>
+
+    <div class="concept-box">
+      <strong>רמז מושגי: GCD – Greatest Common Divisor (מחלק משותף גדול ביותר)</strong><br>
+      האלגוריתם בקוד מחפש את המחלק המשותף <em>הגדול ביותר</em> של שני מספרים.
+      המחלקים המשותפים של 55 ו-66 הם 1 ו-11. הלולאה עוברת בסדר עולה, ולכן hint מתעדכן לערך הגדול האחרון.
+    </div>
+
+    <div class="answer-summary">
+      <h3>למה התוצאה הסופית היא 11?</h3>
+      <p>
+        המחלקים המשותפים של 55 ו-66 הם <strong>1</strong> ו-<strong>11</strong>.
+        הלולאה עוברת בסדר עולה, ולכן <code>hint</code> קודם מקבל <code>1</code>,
+        ובהמשך מתעדכן ל-<code>11</code>. אחרי 11 אין מחלק משותף גדול יותר.
+      </p>
+    </div>
+
+    <div class="final-answer">
+      הפלט הסופי: <code>hint is: 11</code>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ שאלה 4 ══════════ -->
+<div class="card">
+  <div class="card-header">
+    <div class="num">4</div>
+    <h2>Rotate בבדיקות תאימות – מה זה ואיך בודקים?</h2>
+  </div>
+  <div class="card-body">
+    <span class="label">Compatibility Testing</span>
+    <span class="label label-purple">Device Orientation</span>
+
+    <p>
+      <strong>Rotate</strong> בבדיקות תאימות מתייחס לסיבוב מכשיר —
+      מעבר בין <strong>Portrait</strong> (אנכי) ל-<strong>Landscape</strong> (אופקי).
+    </p>
+
+    <table>
+      <tr><th>מצב</th><th>תיאור</th><th>שימוש נפוץ</th></tr>
+      <tr><td><strong>Portrait</strong></td><td>מוחזק אנכית (גובה &gt; רוחב)</td><td>גלילה, קריאה, אפליקציות רגילות</td></tr>
+      <tr><td><strong>Landscape</strong></td><td>מוחזק אופקית (רוחב &gt; גובה)</td><td>וידאו, משחקים, מפות</td></tr>
+    </table>
+
+    <p><strong>מה בודקים?</strong></p>
+    <ul>
+      <li>שהממשק <strong>מסתגל</strong> לרזולוציה החדשה</li>
+      <li>שלא מתרחשת <strong>קריסה</strong> בעת הסיבוב</li>
+      <li>שה<strong>מצב נשמר</strong> — נתוני משתמש, גלילה, טפסים</li>
+      <li>שתמונות וטקסטים <strong>אינם חותכים</strong> את המסך</li>
+    </ul>
+
+    <div class="concept-box">
+      <strong>כלים לאוטומציה:</strong>
+      <table style="margin-top:10px;">
+        <tr><th>כלי</th><th>פלטפורמה</th><th>פקודה</th></tr>
+        <tr><td><strong>Appium</strong></td><td>Android / iOS</td><td><code>driver.rotate(ScreenOrientation.LANDSCAPE)</code></td></tr>
+        <tr><td><strong>Cypress</strong></td><td>Web</td><td><code>cy.viewport(height, width)</code></td></tr>
+        <tr><td><strong>Selenium</strong></td><td>Web / Mobile</td><td><code>driver.manage().window().setSize()</code></td></tr>
+      </table>
+    </div>
+
+    <p><strong>שלבים אופייניים:</strong></p>
+    <ol class="step-list">
+      <li>פתח ב-Portrait — ודא שהממשק תקין</li>
+      <li>בצע פעולה (מלא טופס, גלול)</li>
+      <li>סובב ל-Landscape</li>
+      <li>ודא הסתגלות — אין חיתוך, אין קריסה</li>
+      <li>ודא שמצב האפליקציה נשמר</li>
+      <li>חזור ל-Portrait — בדוק שוב</li>
+    </ol>
+
+    <!-- הוספה: איך בודקים אוטומטית -->
+    <div class="sub-section">
+      <div class="sub-section-header">📱 איך בודקים מעבר Orientation אוטומטית — עם דוגמאות קוד</div>
+      <div class="sub-section-body">
+
+        <p>
+          בדיקת מעבר Orientation אוטומטית מחייבת שלושה דברים:
+          <strong>(1)</strong> פקודה שמשנה את כיוון המכשיר,
+          <strong>(2)</strong> המתנה שהאפליקציה תגיב לשינוי,
+          <strong>(3)</strong> assertions שמוודאות שהכל תקין לאחר הסיבוב.
+        </p>
+
+        <!-- Appium -->
+        <p><strong>דוגמה 1 – Appium (אפליקציית Android / iOS)</strong></p>
+        <p>
+          Appium הוא הכלי הנפוץ ביותר לבדיקות Mobile אוטומטיות.
+          הוא מאפשר שליטה על מכשיר פיזי או אמולטור ממש כמו משתמש אמיתי.
+        </p>
+        <pre><code><span class="cmt">// Java + Appium — Portrait → Landscape → Portrait</span>
+
+<span class="cmt">// Step 1: start in Portrait</span>
+driver.rotate(ScreenOrientation.PORTRAIT);
+<span class="hl">Thread</span>.sleep(<span class="nm">1000</span>); <span class="cmt">// wait for animation to finish</span>
+
+<span class="cmt">// Step 2: verify UI is correct in Portrait</span>
+<span class="hl">WebElement</span> searchBtn = driver.findElement(By.id(<span class="str">"search_button"</span>));
+Assert.assertTrue(<span class="str">"Search button not visible in Portrait"</span>, searchBtn.isDisplayed());
+
+<span class="cmt">// Step 3: rotate to Landscape</span>
+driver.rotate(ScreenOrientation.LANDSCAPE);
+<span class="hl">Thread</span>.sleep(<span class="nm">1000</span>); <span class="cmt">// wait for the app to adapt</span>
+
+<span class="cmt">// Step 4: verify UI is still correct after rotation</span>
+Assert.assertTrue(<span class="str">"Search button disappeared after rotation"</span>, searchBtn.isDisplayed());
+Assert.assertEquals(driver.getOrientation(), ScreenOrientation.LANDSCAPE);
+
+<span class="cmt">// Step 5: rotate back to Portrait and verify again</span>
+driver.rotate(ScreenOrientation.PORTRAIT);
+<span class="hl">Thread</span>.sleep(<span class="nm">1000</span>);
+Assert.assertTrue(<span class="str">"Search button not visible after returning to Portrait"</span>, searchBtn.isDisplayed());</code></pre>
+
+        <div class="concept-box">
+          <strong>מה זה ScreenOrientation?</strong><br>
+          <code>ScreenOrientation</code> הוא Enum (ערכה סגורה של אפשרויות) ב-Appium.
+          יש לו שני ערכים:
+          <ul style="padding-right:18px; margin-top:6px;">
+            <li><code>ScreenOrientation.PORTRAIT</code> — כיוון אנכי (גובה גדול מרוחב)</li>
+            <li><code>ScreenOrientation.LANDSCAPE</code> — כיוון אופקי (רוחב גדול מגובה)</li>
+          </ul>
+          <code>driver.rotate()</code> שולח פקודה למכשיר/אמולטור לבצע את הסיבוב בפועל.
+        </div>
+
+        <!-- Appium עם state preservation -->
+        <p><strong>דוגמה 2 – Appium עם שמירת מצב (State Preservation)</strong></p>
+        <p>בדיקה חשובה: שנתונים שהמשתמש הכניס לא נמחקים אחרי הסיבוב.</p>
+        <p style="font-size:0.85rem; color:#475569;">
+          <strong>שלב 1</strong> — מלא שדה טקסט ב-Portrait ובדוק שהערך נשמר.<br>
+          <strong>שלב 2</strong> — סובב ל-Landscape והמתן לסיום האנימציה.<br>
+          <strong>שלב 3</strong> — מצא את אותו שדה מחדש וודא שהנתונים לא נמחקו.
+        </p>
+        <pre><code><span class="cmt">// Step 1: fill text field in Portrait and verify value</span>
+<span class="hl">WebElement</span> nameField = driver.findElement(By.id(<span class="str">"name_input"</span>));
+nameField.sendKeys(<span class="str">"John Doe"</span>);
+Assert.assertEquals(nameField.getText(), <span class="str">"John Doe"</span>);
+
+<span class="cmt">// Step 2: rotate to Landscape</span>
+driver.rotate(ScreenOrientation.LANDSCAPE);
+<span class="hl">Thread</span>.sleep(<span class="nm">1500</span>);
+
+<span class="cmt">// Step 3: verify data was NOT lost after rotation</span>
+<span class="hl">WebElement</span> nameFieldAfter = driver.findElement(By.id(<span class="str">"name_input"</span>));
+Assert.assertEquals(
+  <span class="str">"Data should be preserved after rotation!"</span>,
+  nameFieldAfter.getText(),
+  <span class="str">"John Doe"</span>
+);</code></pre>
+
+        <!-- Cypress -->
+        <p><strong>דוגמה 3 – Cypress (בדיקת Web Responsive)</strong></p>
+        <p>
+          בדפדפן אין "סיבוב" פיזי — אבל אפשר לדמות את השינוי על ידי החלפת ממדי ה-viewport.
+          Cypress מאפשר זאת בקלות.
+        </p>
+        <pre><code><span class="cmt">// Cypress — simulate Portrait → Landscape transition</span>
+
+describe(<span class="str">'Orientation Tests'</span>, () => {
+
+  it(<span class="str">'should display correctly in Portrait mode'</span>, () => {
+    <span class="cmt">// Portrait: width 390px x height 844px (iPhone 14)</span>
+    cy.viewport(<span class="nm">390</span>, <span class="nm">844</span>)
+    cy.visit(<span class="str">'/'</span>)
+    cy.get(<span class="str">'[data-testid="search-btn"]'</span>).should(<span class="str">'be.visible'</span>)
+    cy.get(<span class="str">'nav'</span>).should(<span class="str">'be.visible'</span>)
+  })
+
+  it(<span class="str">'should display correctly in Landscape mode'</span>, () => {
+    <span class="cmt">// Landscape: swap dimensions — width 844px x height 390px</span>
+    cy.viewport(<span class="nm">844</span>, <span class="nm">390</span>)
+    cy.visit(<span class="str">'/'</span>)
+    cy.get(<span class="str">'[data-testid="search-btn"]'</span>).should(<span class="str">'be.visible'</span>)
+    <span class="cmt">// verify no horizontal overflow (elements not cut off)</span>
+    cy.get(<span class="str">'body'</span>).should(<span class="str">'not.have.css'</span>, <span class="str">'overflow-x'</span>, <span class="str">'scroll'</span>)
+  })
+
+  it(<span class="str">'should preserve form data after orientation change'</span>, () => {
+    cy.viewport(<span class="nm">390</span>, <span class="nm">844</span>) <span class="cmt">// Portrait</span>
+    cy.visit(<span class="str">'/'</span>)
+    cy.get(<span class="str">'input[name="search"]'</span>).type(<span class="str">'gov.il'</span>)
+
+    cy.viewport(<span class="nm">844</span>, <span class="nm">390</span>) <span class="cmt">// rotate to Landscape</span>
+
+    <span class="cmt">// verify typed text was preserved</span>
+    cy.get(<span class="str">'input[name="search"]'</span>).should(<span class="str">'have.value'</span>, <span class="str">'gov.il'</span>)
+  })
+
+})</code></pre>
+
+        <div class="concept-box">
+          <strong>מה זה Viewport?</strong><br>
+          Viewport הוא השטח הגלוי של הדפדפן — הגודל שבו הדף מוצג.
+          <code>cy.viewport(width, height)</code> משנה את המידות בזמן ריצת הטסט.
+          כדי לדמות סיבוב: מחליפים בין <code>(390, 844)</code> ל-<code>(844, 390)</code>.
+          ב-Cypress יש גם שמות מוכנים: <code>cy.viewport('iphone-x', 'landscape')</code>.
+        </div>
+
+        <pre><code><span class="cmt">// Cypress — שימוש בשמות מכשיר מוכנים</span>
+cy.viewport(<span class="str">'iphone-x'</span>)              <span class="cmt">// Portrait ברירת מחדל: 375×812</span>
+cy.viewport(<span class="str">'iphone-x'</span>, <span class="str">'landscape'</span>)  <span class="cmt">// Landscape: 812×375</span>
+cy.viewport(<span class="str">'ipad-2'</span>)                 <span class="cmt">// Portrait טאבלט: 768×1024</span>
+cy.viewport(<span class="str">'ipad-2'</span>, <span class="str">'landscape'</span>)   <span class="cmt">// Landscape טאבלט: 1024×768</span></code></pre>
+
+        <!-- Appium iOS -->
+        <p><strong>דוגמה 4 – XCUITest / Appium ב-iOS (Swift)</strong></p>
+        <pre><code><span class="cmt">// Swift + XCUITest — iOS בלבד</span>
+
+<span class="kw">func</span> <span class="hl">testOrientationChange</span>() {
+    <span class="kw">let</span> app = XCUIApplication()
+    app.launch()
+
+    <span class="cmt">// ודא שב-Portrait הכפתור מוצג</span>
+    XCUIDevice.shared.orientation = .portrait
+    XCTAssertTrue(app.buttons[<span class="str">"search"</span>].exists)
+
+    <span class="cmt">// סובב ל-Landscape</span>
+    XCUIDevice.shared.orientation = .landscapeLeft
+    XCTAssertTrue(app.buttons[<span class="str">"search"</span>].exists, <span class="str">"כפתור נעלם אחרי סיבוב"</span>)
+
+    <span class="cmt">// חזור ל-Portrait</span>
+    XCUIDevice.shared.orientation = .portrait
+    XCTAssertTrue(app.buttons[<span class="str">"search"</span>].exists)
+}</code></pre>
+
+        <!-- טבלת השוואה -->
+        <p><strong>טבלת השוואה — פקודות סיבוב לפי כלי:</strong></p>
+        <div style="overflow-x: auto;">
+        <table style="font-size:0.8rem; min-width:700px;">
+          <tr>
+            <th style="white-space:nowrap; width:110px;">כלי</th>
+            <th>Portrait</th>
+            <th>Landscape</th>
+            <th style="white-space:nowrap;">בדיקת כיוון נוכחי</th>
+          </tr>
+          <tr>
+            <td><strong>Appium (Java)</strong></td>
+            <td><code>driver.rotate(<br>ScreenOrientation.PORTRAIT)</code></td>
+            <td><code>driver.rotate(<br>ScreenOrientation.LANDSCAPE)</code></td>
+            <td><code>driver.getOrientation()</code></td>
+          </tr>
+          <tr>
+            <td><strong>Cypress (Web)</strong></td>
+            <td><code>cy.viewport(390, 844)</code></td>
+            <td><code>cy.viewport(844, 390)</code></td>
+            <td>אין פקודה — ממדים ידועים מראש</td>
+          </tr>
+          <tr>
+            <td><strong>XCUITest (iOS)</strong></td>
+            <td><code>XCUIDevice.shared<br>.orientation = .portrait</code></td>
+            <td><code>XCUIDevice.shared<br>.orientation = .landscapeLeft</code></td>
+            <td><code>XCUIDevice.shared<br>.orientation</code></td>
+          </tr>
+          <tr>
+            <td><strong>Android (adb)</strong></td>
+            <td><code>adb shell settings put<br>system user_rotation 0</code></td>
+            <td><code>adb shell settings put<br>system user_rotation 1</code></td>
+            <td><code>adb shell settings get<br>system user_rotation</code></td>
+          </tr>
+        </table>
+        </div>
+
+        <div class="success-box">
+          <strong>מה לבדוק אחרי כל סיבוב — Assertions מומלצות:</strong>
+          <ul style="padding-right:18px; margin-top:8px;">
+            <li>אלמנטים קריטיים (כפתורים, טפסים, תמונות) — עדיין <strong>גלויים</strong></li>
+            <li>אין <strong>overflow</strong> אופקי (גלילה לצדדים לא רצויה)</li>
+            <li><strong>נתוני טופס</strong> שהוכנסו לפני הסיבוב — עדיין קיימים</li>
+            <li>כיוון המכשיר <strong>השתנה בפועל</strong> (getOrientation)</li>
+            <li>האפליקציה לא <strong>קרסה</strong> (האלמנטים עדיין ניתנים ללחיצה)</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

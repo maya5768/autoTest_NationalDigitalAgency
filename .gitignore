@@ -12,3 +12,11 @@ CLAUDE.md
 # OS files
 .DS_Store
 Thumbs.db
+
+# Node
+node_modules/
+
+# Cypress artifacts
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
