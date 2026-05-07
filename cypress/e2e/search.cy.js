@@ -4,6 +4,7 @@ describe('Search Component Tests - gov.il Header', () => {
   const searchPage = new SearchPage()
 
   beforeEach(() => {
+    cy.fixture('search-queries').as('q')
     searchPage.visit()
   })
 
@@ -16,29 +17,24 @@ describe('Search Component Tests - gov.il Header', () => {
     searchPage.verifyInputVisible()
   })
 
-  it('TC03 - typing a query shows autocomplete suggestions', () => {
-    cy.fixture('search-queries').then((q) => {
-      searchPage.openSearch()
-      searchPage.typeQuery(q.healthQuery)
-      searchPage.verifySuggestionsVisible()
+  it('TC03 - typing a query shows autocomplete suggestions', function() {
+    searchPage.openSearch()
+    searchPage.typeQuery(this.q.healthQuery)
+    searchPage.verifySuggestionsVisible()
+  })
+
+  it('TC04 - submitting a search navigates to results page', function() {
+    const { passportQuery } = this.q
+    searchPage.search(passportQuery)
+    cy.url().should('satisfy', (url) => {
+      return url.includes('search') || url.includes(passportQuery) || url.includes('query')
     })
   })
 
-  it('TC04 - submitting a search navigates to results page', () => {
-    cy.fixture('search-queries').then((q) => {
-      searchPage.search(q.passportQuery)
-      cy.url().should('satisfy', (url) => {
-        return url.includes('search') || url.includes(q.passportQuery) || url.includes('query')
-      })
-    })
-  })
-
-  it('TC05 - clearing the search input empties the field', () => {
-    cy.fixture('search-queries').then((q) => {
-      searchPage.openSearch()
-      searchPage.typeQuery(q.idQuery)
-      searchPage.clearInput()
-      searchPage.verifyInputEmpty()
-    })
+  it('TC05 - clearing the search input empties the field', function() {
+    searchPage.openSearch()
+    searchPage.typeQuery(this.q.idQuery)
+    searchPage.clearInput()
+    searchPage.verifyInputEmpty()
   })
 })

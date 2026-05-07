@@ -28,12 +28,14 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
   })
 
   describe('Tab: תשלומים', () => {
+    const tabLabel = 'תשלומים'
+
     beforeEach(() => {
-      page.clickTab('תשלומים')
+      page.clickTab(tabLabel)
     })
 
     it('should navigate to the payments section', function() {
-      const { urlSegment } = this.tabs.find((t) => t.label === 'תשלומים')
+      const { urlSegment } = this.tabs.find((t) => t.label === tabLabel)
       page.verifyUrlIncludes(urlSegment)
     })
 
@@ -54,12 +56,14 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
   })
 
   describe('Tab: פניות', () => {
+    const tabLabel = 'פניות'
+
     beforeEach(() => {
-      page.clickTab('פניות')
+      page.clickTab(tabLabel)
     })
 
     it('should navigate to the applications section', function() {
-      const { urlSegment } = this.tabs.find((t) => t.label === 'פניות')
+      const { urlSegment } = this.tabs.find((t) => t.label === tabLabel)
       page.verifyUrlIncludes(urlSegment)
     })
 
@@ -75,12 +79,14 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
   })
 
   describe('Tab: מסמכים', () => {
+    const tabLabel = 'מסמכים'
+
     beforeEach(() => {
-      page.clickTab('מסמכים')
+      page.clickTab(tabLabel)
     })
 
     it('should navigate to the documents section', function() {
-      const { urlSegment } = this.tabs.find((t) => t.label === 'מסמכים')
+      const { urlSegment } = this.tabs.find((t) => t.label === tabLabel)
       page.verifyUrlIncludes(urlSegment)
     })
 
@@ -96,12 +102,14 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
   })
 
   describe('Tab: הגדרות', () => {
+    const tabLabel = 'הגדרות'
+
     beforeEach(() => {
-      page.clickTab('הגדרות')
+      page.clickTab(tabLabel)
     })
 
     it('should navigate to the settings section', function() {
-      const { urlSegment } = this.tabs.find((t) => t.label === 'הגדרות')
+      const { urlSegment } = this.tabs.find((t) => t.label === tabLabel)
       page.verifyUrlIncludes(urlSegment)
     })
 
@@ -120,12 +128,14 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
   })
 
   describe('Tab: שירותים', () => {
+    const tabLabel = 'שירותים'
+
     beforeEach(() => {
-      page.clickTab('שירותים')
+      page.clickTab(tabLabel)
     })
 
     it('should navigate to the services/favourites section', function() {
-      const { urlSegment } = this.tabs.find((t) => t.label === 'שירותים')
+      const { urlSegment } = this.tabs.find((t) => t.label === tabLabel)
       page.verifyUrlIncludes(urlSegment)
     })
 

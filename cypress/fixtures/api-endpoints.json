@@ -1,8 +1,8 @@
 {
   "endpoints": [
-    { "path": "/cities",            "alias": "cities" },
-    { "path": "/categories",        "alias": "categories" },
-    { "path": "/accessibilitytype", "alias": "accessibilitytype" }
+    { "path": "/cities" },
+    { "path": "/categories" },
+    { "path": "/accessibilitytype" }
   ],
   "expectedStatus": 200
 }

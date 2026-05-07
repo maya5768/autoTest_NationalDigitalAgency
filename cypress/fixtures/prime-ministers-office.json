@@ -1,6 +1,5 @@
 {
   "apiPath": "/he/departments/prime_ministers_office",
-  "interceptPattern": "**/prime_ministers_office**",
   "originalTitle": "משרד ראש הממשלה",
   "modifiedTitle": "office משרד ראש הממשלה"
 }
