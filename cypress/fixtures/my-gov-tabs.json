@@ -1,0 +1,7 @@
+[
+  { "label": "תשלומים", "urlSegment": "payments"      },
+  { "label": "פניות",   "urlSegment": "applications"  },
+  { "label": "מסמכים",  "urlSegment": "documents"     },
+  { "label": "הגדרות",  "urlSegment": "settings"      },
+  { "label": "שירותים", "urlSegment": "services"      }
+]

@@ -4,10 +4,13 @@ describe('Intercept API Requests - Status Code Validation', () => {
   it('should return status 200 for cities, categories, and accessibilitytype requests', () => {
     const page = new GovHomePage()
 
-    page.visit().triggerApiFetch('/cities', '/categories', '/accessibilitytype')
+    cy.fixture('api-endpoints').then((data) => {
+      const paths = data.endpoints.map((e) => e.path)
+      page.visit().triggerApiFetch(...paths)
 
-    cy.wait('@cities').its('response.statusCode').should('eq', 200)
-    cy.wait('@categories').its('response.statusCode').should('eq', 200)
-    cy.wait('@accessibilitytype').its('response.statusCode').should('eq', 200)
+      data.endpoints.forEach((e) => {
+        cy.wait(`@${e.alias}`).its('response.statusCode').should('eq', data.expectedStatus)
+      })
+    })
   })
 })

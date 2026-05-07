@@ -17,22 +17,28 @@ describe('Search Component Tests - gov.il Header', () => {
   })
 
   it('TC03 - typing a query shows autocomplete suggestions', () => {
-    searchPage.openSearch()
-    searchPage.typeQuery('בריאות')
-    searchPage.verifySuggestionsVisible()
+    cy.fixture('search-queries').then((q) => {
+      searchPage.openSearch()
+      searchPage.typeQuery(q.healthQuery)
+      searchPage.verifySuggestionsVisible()
+    })
   })
 
   it('TC04 - submitting a search navigates to results page', () => {
-    searchPage.search('דרכון')
-    cy.url().should('satisfy', (url) => {
-      return url.includes('search') || url.includes('דרכון') || url.includes('query')
+    cy.fixture('search-queries').then((q) => {
+      searchPage.search(q.passportQuery)
+      cy.url().should('satisfy', (url) => {
+        return url.includes('search') || url.includes(q.passportQuery) || url.includes('query')
+      })
     })
   })
 
   it('TC05 - clearing the search input empties the field', () => {
-    searchPage.openSearch()
-    searchPage.typeQuery('תעודת זהות')
-    searchPage.clearInput()
-    searchPage.verifyInputEmpty()
+    cy.fixture('search-queries').then((q) => {
+      searchPage.openSearch()
+      searchPage.typeQuery(q.idQuery)
+      searchPage.clearInput()
+      searchPage.verifyInputEmpty()
+    })
   })
 })

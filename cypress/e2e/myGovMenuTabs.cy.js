@@ -12,6 +12,7 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
   let page
 
   beforeEach(() => {
+    cy.fixture('my-gov-tabs').as('tabs')
     page = new MyGovPage()
     page.visit()
   })
@@ -31,8 +32,9 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
       page.clickTab('תשלומים')
     })
 
-    it('should navigate to the payments section', () => {
-      page.verifyUrlIncludes('payments')
+    it('should navigate to the payments section', function() {
+      const { urlSegment } = this.tabs.find((t) => t.label === 'תשלומים')
+      page.verifyUrlIncludes(urlSegment)
     })
 
     it('should display a list of payments or an empty state message', () => {
@@ -56,8 +58,9 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
       page.clickTab('פניות')
     })
 
-    it('should navigate to the applications section', () => {
-      page.verifyUrlIncludes('applications')
+    it('should navigate to the applications section', function() {
+      const { urlSegment } = this.tabs.find((t) => t.label === 'פניות')
+      page.verifyUrlIncludes(urlSegment)
     })
 
     it('should display applications list or empty state', () => {
@@ -76,8 +79,9 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
       page.clickTab('מסמכים')
     })
 
-    it('should navigate to the documents section', () => {
-      page.verifyUrlIncludes('documents')
+    it('should navigate to the documents section', function() {
+      const { urlSegment } = this.tabs.find((t) => t.label === 'מסמכים')
+      page.verifyUrlIncludes(urlSegment)
     })
 
     it('should display documents list or empty state', () => {
@@ -96,8 +100,9 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
       page.clickTab('הגדרות')
     })
 
-    it('should navigate to the settings section', () => {
-      page.verifyUrlIncludes('settings')
+    it('should navigate to the settings section', function() {
+      const { urlSegment } = this.tabs.find((t) => t.label === 'הגדרות')
+      page.verifyUrlIncludes(urlSegment)
     })
 
     it('should display user profile information', () => {
@@ -119,8 +124,9 @@ describe('my.gov.il - Personal Area - All Menu Tabs', () => {
       page.clickTab('שירותים')
     })
 
-    it('should navigate to the services/favourites section', () => {
-      page.verifyUrlIncludes('services')
+    it('should navigate to the services/favourites section', function() {
+      const { urlSegment } = this.tabs.find((t) => t.label === 'שירותים')
+      page.verifyUrlIncludes(urlSegment)
     })
 
     it('should display favourite services or empty state', () => {
